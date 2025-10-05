@@ -7,8 +7,12 @@
 int main(int argc, char *argv[]) {
 	initscr();
 	cbreak();
+	int x, y;
+	getmaxyx(stdscr, y, x);
+	mvprintw(24, 5, "y: %i, x: %i", y, x);
+	initialize_vars();
 	printw("Hello, world!");
-    draw_x(14, 5, 20, "=", 1);	
+	draw_board();
     refresh();
 	getch();
 	endwin();
