@@ -6,6 +6,10 @@
 // Game board size
 #define width 20
 #define height 20
+#define left <!
+#define right !>
+#define bottom_1 =
+#define bottom_2 /\
 
 extern int MAX_X, MAX_Y;
 // Intial X & Y within game window
