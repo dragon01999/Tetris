@@ -1,14 +1,14 @@
 #ifndef TETROMINO_H
 #define TETROMINO_H
 
-#define block_size 4
-#define tetra_block []
+#define TETRA 4
+#define TETRA_BLOCK []
 
 typedef struct block
 {
 	int x;
 	int y;
-	block *next;
+    struct block *next;
 
 }block;
 
@@ -20,15 +20,16 @@ typedef enum tetromino
 	S = 3,
 	Z = 4,
 	J = 5,
-	I = 6,
-};
+	L = 6,
+} tetromino;
 
-tetromino curr_tetra;
+extern tetromino curr_tetromino;
 
+//Assigns random tetromino, not 7-bag system.
 void rand_block();
 
-block* gen_block(block *initial_block);
-
-void init_tetra(block *initial_block);
+block* gen_block(int no_of_blocks);
+/*
+void init_tetra(block *initial_block); */
 
 #endif
