@@ -69,6 +69,12 @@ bool collision(tetris *tet, int in)
 	return false;
 }
 
+void update_board(tetris *tet, int in)
+{
+	/*
+	 *
+	 */
+
 void update(char dir, tetris *tet, int in)
 {
 	if (dir == 'y') {
