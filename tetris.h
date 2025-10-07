@@ -21,8 +21,10 @@ extern tetromino curr_tetromino;
 
 void init_tetromino(tetris *arr, int index, tetromino s);
 
-void placeIn_Mid(tetris *arr);
+void placeIn_Mid(tetris *arr, int pos);
 
-void update_y(tetris *arr);
+bool collision(tetris *arr, int i, int n);
+
+void update_y(tetris *arr, int pos);
 
 #endif

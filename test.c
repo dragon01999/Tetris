@@ -12,12 +12,15 @@ int main(int argc, char *argv[]) {
 //	int x, y;
 //	getmaxyx(stdscr, y, x);
 //	mvprintw(24, 5, "y: %i, x: %i", y, x);
-    init_tetromino(pieces, 0, T);
+    init_tetromino(pieces, 0, J);
 	initialize_vars();
 	printw("Hello, world!");
     draw_tetromino(pieces);
 	draw_board();
-	update_y(pieces);
+	update_y(pieces, 0);
+	refresh();
+	init_tetromino(pieces, 1, I);
+	update_y(pieces, 1);
     refresh();
 	getch();
 	endwin();
