@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 //	int x, y;
 //	getmaxyx(stdscr, y, x);
 //	mvprintw(24, 5, "y: %i, x: %i", y, x);
-    init_tetromino(pieces, 0, I);
+    init_tetromino(pieces, 0, T);
 	initialize_vars();
 	printw("Hello, world!");
     draw_tetromino(pieces);
