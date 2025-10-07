@@ -23,8 +23,10 @@ void init_tetromino(tetris *arr, int index, tetromino s);
 
 void placeIn_Mid(tetris *arr, int pos);
 
-bool collision(tetris *arr, int i, int n);
+/*                                                      void update_board(bool **arr, int x, int y, bool val);
+*/
+bool collision(tetris *arr, int in);
 
-void update_y(tetris *arr, int pos);
+void update(char dir, tetris *tet, int in);
 
 #endif

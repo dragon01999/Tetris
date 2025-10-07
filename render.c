@@ -43,10 +43,10 @@ void draw_board()
     draw_y(border_x, init_y, height, "!>", 1);
 }
 
-void draw_tetromino(tetris *arr)
+void draw_tetromino(tetris *arr, int in)
 {
 	for (int i = 0; i < 4; i++) {
-		mvprintw(arr[0].y[i], arr[0].x[i], "[]");
+		mvprintw(arr[in].y[i], arr[in].x[i], "[]");
 	}
 	return;
 }

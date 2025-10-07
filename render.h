@@ -22,7 +22,7 @@ void draw_y(int x_pos, int y_pos, int times, char *str, int str_len);
 void initialize_vars();
 
 void draw_board();
-                                                      void draw_tetromino(tetris *arr);
+                                                      void draw_tetromino(tetris *arr, int in);
 
 
 

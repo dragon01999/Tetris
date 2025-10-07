@@ -3,7 +3,7 @@
 #include"render.h"
 #include"tetris.h"
 
-
+bool game_board[height][width];
 tetris shape[7] = {
 	[I] = {
 		.x = {0, 0, 0, 0},
@@ -56,39 +56,28 @@ void placeIn_Mid(tetris *arr, int pos)
 	fprintf(stderr, "  arr0x3: %i mid: %i",  arr[pos].x[3], mid);
 }
 
-bool collision(tetris *arr, int i, int n)
+bool collision(tetris *tet, int in)
 {
-	for (int k = 0; k < 4; k++) {
-		if (arr[i].y[k] == border_y - 2)
+	for (int i = 0; i < 4; i++) {
+		if (tet[in].y[i] == border_y - 2 || tet[in].x[i] == border_x)
 			return true;
-	}
-	for (int k = 0; k < n; k++) {
-		for (int j = 0; j < 4; j++) {
-			if (k != i && arr[i].y[j] == arr[k].y[j])
-				return true;
-		}
+		int x = tet[in].x[i];
+		int y = tet[in].y[i];
+		if (game_board[y][x] == true)
+			return true;
 	}
 	return false;
 }
 
-
-void update_y(tetris *arr, int pos)
-{   
-	placeIn_Mid(arr, pos);
-	while (!collision(arr, 0, 1)) {
-        clear();
-		arr[pos].y[3] = arr[pos].y[3] + 1;
-		arr[pos].y[2] = arr[pos].y[2] + 1;
-		arr[pos].y[1] = arr[pos].y[1] + 1;
-		arr[pos].y[0] = arr[pos].y[0] + 1;
-		draw_tetromino(arr);
-		draw_board();
-        refresh();
-		napms(800);
+void update(char dir, tetris *tet, int in)
+{
+	if (dir == 'y') {
+		for (int i = 0; i < 4; i++)
+			tet[in].y[i] += 1;
+		return;
 	}
-	getch();
+	else if (dir == 'x') {
+		for (int i = 0; i < 4; i++)                               tet[in].x[i] += 1;                                return;
+	}
 	return;
 }
-
-
-
