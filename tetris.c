@@ -1,5 +1,6 @@
 #include<time.h>
 #include<ncurses.h>
+#include<stdlib.h>
 #include"render.h"
 #include"tetris.h"
 
@@ -36,10 +37,11 @@ tetris shape[7] = {
 };
 
 
-void init_tetromino(tetris *arr, int index, tetromino s)
+void init_tetromino(tetris *arr, int index)
 {   
 	initialize_vars();
-	arr[index] = shape[s];
+	tetromino sh = (rand() % 7);
+	arr[index] = shape[sh];
 //	placeIn_Mid(arr);
 	return;
 }
@@ -56,34 +58,52 @@ void placeIn_Mid(tetris *arr, int pos)
 	fprintf(stderr, "  arr0x3: %i mid: %i",  arr[pos].x[3], mid);
 }
 
+void update_GameBoard(tetris *tet, int in)
+{
+	for (int i = 0; i < 4; i++) {
+        int x = tet[in].x[i];
+        int y = tet[in].y[i];
+		if (game_board[y][x] != true)
+		game_board[y][x] = true;
+	}
+	return;
+}
+
 bool collision(tetris *tet, int in)
 {
 	for (int i = 0; i < 4; i++) {
-		if (tet[in].y[i] == border_y - 2 || tet[in].x[i] == border_x)
-			return true;
 		int x = tet[in].x[i];
 		int y = tet[in].y[i];
 		if (game_board[y][x] == true)
+			return true;
+		if (y == border_y - 2 || x == border_x)
 			return true;
 	}
 	return false;
 }
 
-void update_board(tetris *tet, int in)
-{
-	/*
-	 *
-	 */
-
-void update(char dir, tetris *tet, int in)
-{
-	if (dir == 'y') {
-		for (int i = 0; i < 4; i++)
+void tetromino_fall(tetris *tet, int in)
+{   
+	bool coll = false;
+	while (!coll) {
+		for (int i = 0; i < 4; i++) {
 			tet[in].y[i] += 1;
-		return;
+			if (collision(tet, in)) {
+				coll = true;
+				break;
+			}
+		}
+			
+
+		draw_tetromino(tet, in);
+		refresh();
+		napms(400);
+		clear();
 	}
-	else if (dir == 'x') {
-		for (int i = 0; i < 4; i++)                               tet[in].x[i] += 1;                                return;
-	}
+	update_GameBoard(tet, in);
 	return;
 }
+
+void draw_game()
+{                                                         for (int i = 0; i < height; i++)                          for (int k = 0; k < width; k++)
+            if (game_board[i][k])                                     mvprintw(i, k, "[]");                     return;                                           }
