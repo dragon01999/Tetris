@@ -1,4 +1,5 @@
-#include<time.h>
+#include<stdio.h>
+#include<stdbool.h>
 #include<ncurses.h>
 #include<stdlib.h>
 #include"render.h"
@@ -6,104 +7,104 @@
 
 bool game_board[height][width];
 tetris shape[7] = {
-	[I] = {
-		.x = {0, 0, 0, 0},
-		.y = {0, 1, 2, 3}
-	},
-	[O] = {
-		.x = {0, 2, 0, 2},
-		.y = {0, 0, 1, 1}
-	},
-	[T] = {
-		.x = {0, 2, 4, 2},
-		.y = {0, 0, 0, 1}
-	},
-	[S] = {
-		.x = {0, 2, 2, 4},
-		.y = {0, 0, 1, 1}	
-	},
-	[Z] = {
-		.x = {2, 4, 0, 2},
-	    .y = {0, 0, 1, 1}		
-	},
-	[J] = {
-		.x = {2, 2, 2, 0},
-		.y = {0, 1, 2, 2}
-	},
-	[L] = {
-		.x = {2, 2, 2, 0},
-		.y = {0, 1, 2, 2}
-	},
+        [I] = {
+                .x = {0, 0, 0, 0},
+                .y = {0, 1, 2, 3}
+        },
+        [O] = {
+                .x = {0, 2, 0, 2},
+                .y = {0, 0, 1, 1}
+        },
+        [T] = {
+                .x = {0, 2, 4, 2},
+                .y = {0, 0, 0, 1}
+        },
+        [S] = {
+                .x = {0, 2, 2, 4},
+                .y = {0, 0, 1, 1}        
+        },
+        [Z] = {
+                .x = {2, 4, 0, 2},
+                .y = {0, 0, 1, 1}                
+        },
+        [J] = {
+                .x = {2, 2, 2, 0},
+                .y = {0, 1, 2, 2}
+        },
+        [L] = {
+                .x = {2, 2, 2, 0},
+                .y = {0, 1, 2, 2}
+        },
 };
 
-
 void init_tetromino(tetris *arr, int index)
-{   
-	initialize_vars();
-	tetromino sh = (rand() % 7);
-	arr[index] = shape[sh];
-//	placeIn_Mid(arr);
-	return;
-}
-
-void placeIn_Mid(tetris *arr, int pos)
 {
-	fprintf(stderr, "  arr0x3: %i ", arr[0].x[3]);
-	int mid_arr = arr[pos].x[2];
-	arr[pos].x[0] = (arr[pos].x[2] + mid - 1) - arr[0].x[0]; 
-	arr[pos].x[1] = (arr[pos].x[2] + mid - 1) - arr[0].x[1];
-	arr[pos].x[2] = (arr[pos].x[2] + mid - 1) - arr[pos].x[2];
-	arr[pos].x[3] = (mid_arr + mid - 1) - arr[pos].x[3];
-
-	fprintf(stderr, "  arr0x3: %i mid: %i",  arr[pos].x[3], mid);
+        initialize_vars();
+        tetromino sh = (rand() % 7);
+        arr[index] = shape[sh];
+//        placeIn_Mid(arr);
+        return;
 }
+
 
 void update_GameBoard(tetris *tet, int in)
 {
-	for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
         int x = tet[in].x[i];
         int y = tet[in].y[i];
-		if (game_board[y][x] != true)
-		game_board[y][x] = true;
-	}
-	return;
+			 if (game_board[y][x] != true)
+                game_board[y][x] = true;
+        }
+        return;
 }
 
-bool collision(tetris *tet, int in)
+void update_y(tetris *tet, int in)
 {
 	for (int i = 0; i < 4; i++) {
-		int x = tet[in].x[i];
-		int y = tet[in].y[i];
-		if (game_board[y][x] == true)
-			return true;
-		if (y == border_y - 2 || x == border_x)
-			return true;
+		tet[in].y[i]++;
 	}
-	return false;
+	return;
 }
 
-void tetromino_fall(tetris *tet, int in)
-{   
-	bool coll = false;
-	while (!coll) {
-		for (int i = 0; i < 4; i++) {
-			tet[in].y[i] += 1;
-			if (collision(tet, in)) {
-				coll = true;
-				break;
-			}
-		}
-			
-
-		draw_tetromino(tet, in);
-		refresh();
-		napms(400);
-		clear();
-	}
-	update_GameBoard(tet, in);
-	return;
+bool collision(int x, int y)
+{
+	if (x == border_x || y == border_y - 2)
+		return true;
+	if (game_board[y][x] == true)
+		return true;
+	return false;
 }
 
 void draw_game()
 {                                                         for (int i = 0; i < height; i++)                          for (int k = 0; k < width; k++)
             if (game_board[i][k])                                     mvprintw(i, k, "[]");                     return;                                           }
+
+
+
+void tetromino_fall(tetris *tet, int in)
+{
+	bool coll = false;
+	tetris tmp[2];
+    tmp[0] = tet[in];
+	while (!coll) {
+		update_y(tmp, 0);
+		for (int i = 0; i < 4; i++) 
+			if(collision(tmp[0].x[i], tmp[0].y[i])) {
+					coll = true;
+					break;
+					}
+		if(coll == false)
+		  tet[in] = tmp[0];
+		draw_tetromino(tet, in);
+		draw_board();
+		draw_game();
+		refresh();
+		napms(400);
+		clear();
+
+	}
+	update_GameBoard(tet, in);
+	return;
+}
+					
+

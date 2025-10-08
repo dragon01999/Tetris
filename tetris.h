@@ -1,6 +1,6 @@
 #ifndef TETRIS_H
 #define TETRIS_H
-
+#include<stdbool.h>
 typedef struct tetris {
 	int x[4];
 	int y[4];
@@ -18,15 +18,20 @@ typedef enum {
 
 extern tetromino curr_tetromino;
 
-
-void init_tetromino(tetris *arr, int index, tetromino s);
+void init_tetromino(tetris *arr, int index);
 
 void placeIn_Mid(tetris *arr, int pos);
 
 /*                                                      void update_board(bool **arr, int x, int y, bool val);
 */
-bool collision(tetris *arr, int in);
+void update_GameBoard(tetris *tet, int in);
+	
+bool collision(int x, int y);
 
-void update(char dir, tetris *tet, int in);
+void update_y(tetris *tet, int in);
+
+void tetromino_fall(tetris *tet, int in);
+
+void draw_game();
 
 #endif

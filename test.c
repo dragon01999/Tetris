@@ -1,31 +1,34 @@
 /* File dedicated for testing & debugging. */
+#include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
 #include<ncurses.h>
-#include"tetris.h"
+#include<time.h>
 #include"render.h"
-
+#include"tetris.h"
 int main(int argc, char *argv[]) {
-	initscr();
-	cbreak();
+        initscr();
+        cbreak();
+		srand(time(NULL));
     tetris pieces[2];
-//	int x, y;
-//	getmaxyx(stdscr, y, x);
-//	mvprintw(24, 5, "y: %i, x: %i", y, x);
-    init_tetromino(pieces, 0, J);
-	init_tetromino(pieces, 1, I);
+	init_tetromino(pieces, 0);
 	initialize_vars();
-	printw("Hello, world!");
-    draw_tetromino(pieces, 0);
-	draw_board();
-	update(pieces, 0, 'y');
-	refresh();
-	update(pieces, 1, 'y');
-	draw_tetromino(pieces, 0);
-	refresh();
-	getch();
-	draw_tetromino(pieces, 1);
-	refresh();
+
+	//for (int i = 0; i < 30; i++) {
+		tetromino_fall(pieces, 0);
+		draw_game();
+		draw_board();
+		draw_tetromino(pieces, 0);
+		refresh();
+
+		init_tetromino(pieces, 1);
+		tetromino_fall(pieces, 1);
+        draw_game();
+        draw_board();
+		draw_tetromino(pieces, 0);
+        draw_tetromino(pieces, 1);
+		refresh();
+		//}
 	getch();
 	endwin();
 	return 0;
