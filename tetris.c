@@ -1,4 +1,3 @@
-#include<stdio.h>
 #include<stdbool.h>
 #include<ncurses.h>
 #include<stdlib.h>
@@ -66,6 +65,14 @@ void update_y(tetris *tet, int in)
 	return;
 }
 
+void update_x(tetris *tet, int in, int dir)
+{
+    for (int i = 0; i < 4; i++) {
+        tet[in].x[i] = tet[in].x[i] + dir;
+    }
+    return;
+}
+
 bool collision(int x, int y)
 {
 	if (x == border_x || y == border_y - 2)
@@ -88,11 +95,13 @@ void tetromino_fall(tetris *tet, int in)
     tmp[0] = tet[in];
 	while (!coll) {
 		update_y(tmp, 0);
-		for (int i = 0; i < 4; i++) 
+		input(tet, in);
+		for (int i = 0; i < 4; i++) {
 			if(collision(tmp[0].x[i], tmp[0].y[i])) {
 					coll = true;
 					break;
 					}
+		}
 		if(coll == false)
 		  tet[in] = tmp[0];
 		draw_tetromino(tet, in);
@@ -100,6 +109,7 @@ void tetromino_fall(tetris *tet, int in)
 		draw_game();
 		refresh();
 		napms(400);
+		input(tet, in);
 		clear();
 
 	}
