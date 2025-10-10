@@ -51,7 +51,7 @@ void update_GameBoard(tetris *tet, int in)
         for (int i = 0; i < 4; i++) {
         int x = tet[in].x[i];
         int y = tet[in].y[i];
-			 if (game_board[y][x] != true)
+//			 if (game_board[y][x] != true)
                 game_board[y][x] = true;
         }
         return;
@@ -73,13 +73,18 @@ void update_x(tetris *tet, int in, int dir)
     return;
 }
 
-bool collision(int x, int y)
-{
-	if (x == border_x || y == border_y - 2)
-		return true;
-	if (game_board[y][x] == true)
-		return true;
-	return false;
+bool collision(tetris *tet, int in)
+{	
+	int x, y;
+	for (int i = 0; i < 4; i++) {
+		x = tet[in].x[i];
+		y = tet[in].y[i];
+		if (x == border_x || y == border_y - 2)
+			return true;
+		if (game_board[y][x] == true)
+			return true;
+	}
+		return false;
 }
 
 void draw_game()
@@ -95,13 +100,8 @@ void tetromino_fall(tetris *tet, int in)
     tmp[0] = tet[in];
 	while (!coll) {
 		update_y(tmp, 0);
-		input(tet, in);
-		for (int i = 0; i < 4; i++) {
-			if(collision(tmp[0].x[i], tmp[0].y[i])) {
-					coll = true;
-					break;
-					}
-		}
+		if (collision(tmp, 0) == true)
+			coll = true;
 		if(coll == false)
 		  tet[in] = tmp[0];
 		draw_tetromino(tet, in);

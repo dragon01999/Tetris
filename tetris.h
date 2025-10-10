@@ -26,7 +26,7 @@ void placeIn_Mid(tetris *arr, int pos);
 
 void update_GameBoard(tetris *tet, int in);
 	
-bool collision(int x, int y);
+bool collision(tetris *tet, int in);
 
 void update_y(tetris *tet, int in);
 
