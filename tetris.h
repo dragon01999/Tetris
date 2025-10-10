@@ -1,11 +1,12 @@
 #ifndef TETRIS_H
 #define TETRIS_H
 #include<stdbool.h>
+#include<stdint.h>
 #include"input.h"
 
 typedef struct tetris {
-	int x[4];
-	int y[4];
+	uint8_t x[4];
+	uint8_t y[4];
 }tetris;
 
 typedef enum {
