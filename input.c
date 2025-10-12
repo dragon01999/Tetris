@@ -16,9 +16,9 @@ void input(tetris *tet, int in)
 		case KEY_LEFT:
 			update_x(tet, in, -2);
 			break;
-//		case KEY_UP:
-//			rotate_tetris(tet, in);
-//			break;
+		case KEY_UP:
+			rotate_tetris(tet, in, 1);
+			break;
 //		case KEY_DOWN:
 //			break;
 //		case 'q':

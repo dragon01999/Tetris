@@ -5,44 +5,85 @@
 #include"tetris.h"
 
 bool game_board[height][width];
-tetris shape[7] = {
-        [I] = {
-                .x = {2, 2, 2, 2},
-                .y = {0, 1, 2, 3}
-        },
+tetromino sh;
+tetris shape[7][4] = {
+	[I] = {
+    // 0° — horizontal
+    { .x = {0, 2, 4, 6}, .y = {1, 1, 1, 1} },
+
+    // 90° — vertical
+    { .x = {4, 4, 4, 4}, .y = {0, 1, 2, 3} },
+
+    // 180° — horizontal (flipped but same line)
+    { .x = {0, 2, 4, 6}, .y = {2, 2, 2, 2} },
+
+    // 270° — vertical (mirrored back)
+    { .x = {2, 2, 2, 2}, .y = {0, 1, 2, 3} }
+},	
         [O] = {
-                .x = {0, 2, 0, 2},
-                .y = {0, 0, 1, 1}
+		{ .x = {0,2,0,2}, .y = {0,0,1,1} }
         },
-        [T] = {
-                .x = {0, 2, 4, 2},
-                .y = {0, 0, 0, 1}
-        },
-        [S] = {
-                .x = {0, 2, 2, 4},
-                .y = {0, 0, 1, 1}        
-        },
-        [Z] = {
-                .x = {0, 2, 2, 4},
-                .y = {0, 0, 1, 1}                
-        },
+
         [J] = {
-                .x = {0, 0, 2, 4},
-                .y = {0, 1, 1, 1}
-        },
-        [L] = {
-                .x = {2, 2, 2, 0},
-                .y = {0, 1, 2, 2}
-        },
+		{ .x = {0,0,2,4}, .y = {0,1,2,2} },
+		{ .x = {0,2,2,2}, .y = {0,0,1,2} },
+		{ .x = {2,4,2,2}, .y = {0,0,1,2} },
+		{ .x = {0,2,4,4}, .y = {1,1,1,2} }
+	},
+	
+	[L] = {
+		{ .x = {4,0,2,4}, .y = {0,1,1,1} },
+		{ .x = {2,2,2,4}, .y = {0,1,2,2} },
+		{ .x = {0,2,4,0}, .y = {1,1,1,2} },
+		{ .x = {0,2,2,2}, .y = {0,0,1,2} }
+	},
+	
+	[S] = {
+		{ .x = {2,4,0,2}, .y = {0,0,1,1} },
+		{ .x = {0,0,2,2}, .y = {0,1,1,2} },
+		{ .x = {2,4,0,2}, .y = {1,1,2,2} },
+		{ .x = {2,2,4,4}, .y = {0,1,1,2} }
+	},
+
+	[Z] = {
+		{ .x = {0,2,2,4}, .y = {0,0,1,1} },
+		{ .x = {2,0,2,0}, .y = {0,1,1,2} },
+		{ .x = {0,2,2,4}, .y = {1,1,2,2} },
+		{ .x = {2,0,2,0}, .y = {0,1,1,2} }
+	},
+
+	[T] = {
+		{ .x = {2,0,2,4}, .y = {0,1,1,1} },
+		{ .x = {2,2,2,4}, .y = {0,1,2,1} },
+		{ .x = {0,2,4,2}, .y = {1,1,1,2} },
+		{ .x = {0,2,2,2}, .y = {1,0,1,2} }
+	},
 };
 
 void init_tetromino(tetris *arr, int index)
 {
         initialize_vars();
-        tetromino sh = (rand() % 7);
-        arr[index] = shape[sh];
+        sh = (rand() % 7);
+        arr[index] = shape[0][0];
 //        placeIn_Mid(arr);
         return;
+}
+
+void rotate_tetris(tetris *tet, int in, int r)
+{		
+	int rel_x, rel_y, c_x, c_y;
+	int m_x = shape[0][1].x[1];
+        int m_y = shape[0][1].y[1];
+	c_x = tet[in].x[1];
+	c_y = tet[in].y[1];
+	for (int i = 0; i < 4; i++) {
+		rel_x = shape[0][1].x[i] - m_x;
+		rel_y = shape[0][1].y[i] - m_y;
+		tet[in].x[i] = rel_x + c_x;
+		tet[in].y[i] = rel_y + c_y;
+	}
+	return;
+
 }
 
 
@@ -51,8 +92,8 @@ void update_GameBoard(tetris *tet, int in)
         for (int i = 0; i < 4; i++) {
         int x = tet[in].x[i];
         int y = tet[in].y[i];
-//			 if (game_board[y][x] != true)
-                game_board[y][x] = true;
+//      if (game_board[y][x] != true)
+        game_board[y][x] = true;
         }
         return;
 }
@@ -79,7 +120,7 @@ bool collision(tetris *tet, int in)
 	for (int i = 0; i < 4; i++) {
 		x = tet[in].x[i];
 		y = tet[in].y[i];
-		if (x == border_x || y == border_y - 2)
+		if (x >= border_x || y >= border_y - 1)
 			return true;
 		if (game_board[y][x] == true)
 			return true;
@@ -99,6 +140,7 @@ void tetromino_fall(tetris *tet, int in)
 	tetris tmp[2];
     tmp[0] = tet[in];
 	while (!coll) {
+		input(tet, in);
 		update_y(tmp, 0);
 		if (collision(tmp, 0) == true)
 			coll = true;
@@ -109,7 +151,7 @@ void tetromino_fall(tetris *tet, int in)
 		draw_game();
 		refresh();
 		napms(400);
-		input(tet, in);
+	//	input(tet, in);
 		clear();
 
 	}

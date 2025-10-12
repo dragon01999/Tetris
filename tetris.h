@@ -12,16 +12,18 @@ typedef struct tetris {
 typedef enum {
 	I = 0,
 	O = 1,
-	T = 2,
-	S = 3,
-	Z = 4,
-	J = 5,
-	L = 6,
+	J = 2,
+	L = 3,
+	S = 4,
+	Z = 5,
+	T = 6,
 } tetromino;
 
 extern tetromino curr_tetromino;
 
 void init_tetromino(tetris *arr, int index);
+
+void rotate_tetris(tetris *tet, int in, int r);
 
 void placeIn_Mid(tetris *arr, int pos);
 

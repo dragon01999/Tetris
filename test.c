@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
         initscr();
         cbreak();
 		keypad(stdscr, TRUE);
-		nodelay(stdscr, TRUE);
+//		nodelay(stdscr, TRUE);
 		srand(time(NULL));
     tetris pieces[2];
 	init_tetromino(pieces, 0);
