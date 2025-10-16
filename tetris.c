@@ -64,7 +64,7 @@ void init_tetromino(tetris *arr, int index)
 {
         initialize_vars();
         sh = (rand() % 7);
-        arr[index] = shape[0][0];
+        arr[index] = shape[sh][0];
 //        placeIn_Mid(arr);
         return;
 }
@@ -72,13 +72,13 @@ void init_tetromino(tetris *arr, int index)
 void rotate_tetris(tetris *tet, int in, int r)
 {		
 	int rel_x, rel_y, c_x, c_y;
-	int m_x = shape[0][1].x[1];
-        int m_y = shape[0][1].y[1];
+	int m_x = shape[sh][1].x[1];
+        int m_y = shape[sh][1].y[1];
 	c_x = tet[in].x[1];
 	c_y = tet[in].y[1];
 	for (int i = 0; i < 4; i++) {
-		rel_x = shape[0][1].x[i] - m_x;
-		rel_y = shape[0][1].y[i] - m_y;
+		rel_x = shape[sh][1].x[i] - m_x;
+		rel_y = shape[sh][1].y[i] - m_y;
 		tet[in].x[i] = rel_x + c_x;
 		tet[in].y[i] = rel_y + c_y;
 	}
@@ -140,7 +140,7 @@ void tetromino_fall(tetris *tet, int in)
 	tetris tmp[2];
     tmp[0] = tet[in];
 	while (!coll) {
-		input(tet, in);
+		input(tmp, 0);
 		update_y(tmp, 0);
 		if (collision(tmp, 0) == true)
 			coll = true;

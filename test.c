@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
         initscr();
         cbreak();
 		keypad(stdscr, TRUE);
-//		nodelay(stdscr, TRUE);
+          	nodelay(stdscr, TRUE);
 		srand(time(NULL));
     tetris pieces[2];
 	init_tetromino(pieces, 0);
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 		draw_board();
 		draw_tetromino(pieces, 0);
 		refresh();
-
+		for (int i = 0; i < 8; i++) {
 		init_tetromino(pieces, 1);
 		tetromino_fall(pieces, 1);
         draw_game();
@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
 		draw_tetromino(pieces, 0);
         draw_tetromino(pieces, 1);
 		refresh();
+		}
 		//}
     nodelay(stdscr, FALSE);
 	getch();
