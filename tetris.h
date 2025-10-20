@@ -4,12 +4,10 @@
 typedef struct tetro {
 	int x[4];
 	int y[4];
-	uint_8h color;
 } tetro;
 
 typedef struct table {
 	bool block;
-	uint_8h color;
 } table;
 
 typedef enum {
@@ -24,7 +22,19 @@ typedef enum {
 
 extern shape curr_shape;
 
-void rand_tet(tetro tet);
+void rand_tetro(tetro *tet);
+
+void rotate_tetro(tetro *tet, int curr_r);
+
+void update_GameBoard(tetro tet);
+
+void update_y(tetro *tet);
+
+void update_x(tetro *tet, int dir);
+
+bool is_coll(tetro tet);
+
+void blocks_inBoard();
 
 #endif
 		

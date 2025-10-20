@@ -1,7 +1,7 @@
 #include <ncurses.h>
 #include "tetris.h"
 
-void input()
+void input(tetro *tet)
 {
 	int ch;
 	ch = getch();
@@ -13,7 +13,7 @@ void input()
 			update_x(tet, -2);
 			break;
 		case KEY_UP:
-			upadate_y(tet, 1);
+			update_y(tet);
 			break;
 		default:
 			break;

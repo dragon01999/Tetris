@@ -24,12 +24,6 @@ void draw_ver(int x, int y, int times, char *obj)
 		mvprintw(y + i, x, "%s", obj);
 }
 
-
-
-
-
-
-
 void draw_board()
 {	
 	for (int i = 0; i < HEIGHT; i++)
@@ -40,5 +34,12 @@ void draw_board()
 	draw_ver(mid + WIDTH, 0, HEIGHT, "!<");
 }
 
+void draw_tetro(tetro tet)
+{
+	for (int i = 0; i < 4; i++) {
+		mvprintw(tet.y[i], tet.x[i], "[]");
+	}
+	return;
+}
     
 
