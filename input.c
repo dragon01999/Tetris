@@ -1,5 +1,11 @@
+#include <stdlib.h>
+#include <time.h>
 #include <ncurses.h>
 #include "tetris.h"
+
+struct timespec start;
+long long end_ms, curr_ms;
+float wait_ms = 100;
 
 void input(tetro *tet)
 {
@@ -26,3 +32,18 @@ void input(tetro *tet)
 	}
 	return;
 }
+
+void keypressed(tetro *tetromino)
+{
+	clock_gettime(CLOCK_MONOTONIC, &start);
+	end_ms = (start.tv_sec * 1000) + 10  + (start.tv_nsec/1000000);
+curr_ms = start.tv_sec * 1000 + (start.tv_nsec / 1000000);
+	while (curr_ms <= end_ms) {
+		clock_gettime(CLOCK_MONOTONIC, &start);
+		curr_ms =  start.tv_sec * 1000 + (start.tv_nsec / 1000000);
+		input(tetromino);
+	}
+	return;
+}
+
+

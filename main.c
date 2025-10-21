@@ -17,8 +17,9 @@ int main(int argc, char **argv) {
 	rand_tetro(&tetromino);
 	bool coll = false;
 	for (int i = 0; i < 1000; i++) {
+//		input(&tetromino);
+		keypressed(&tetromino);
 		tmp = tetromino;
-		input(&tmp);
 		update_y(&tmp);
 		coll = is_coll(tmp);
 		if (!coll)

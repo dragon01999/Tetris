@@ -3,4 +3,7 @@
 
 void input(tetro *tet);
 
+
+void keypressed(tetro *tetromino);
+
 #endif
