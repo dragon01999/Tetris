@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <string.h>
 #include <stdlib.h>
 #include <ncurses.h>
 #include "tetris.h"
@@ -7,7 +8,7 @@
 table game_board[HEIGHT][WIDTH];
 table second_board[HEIGHT][WIDTH];
 table *curr_board, *tmp_board;
-int sh;
+int sh, curr_rot;
 static tetro tetromino[7][4] = {
 	[I] = {
 		//0
@@ -44,7 +45,8 @@ void rand_tetro(tetro *tet)
 {
 	init_rinfo();
 	sh = (rand() % 7);
-	*tet = tetromino[sh][0];
+	*tet = tetromino[1][0];
+	curr_rot = 0;
 //	place_InMid(tet);
 	return;
 }
@@ -52,13 +54,13 @@ void rand_tetro(tetro *tet)
 void rotate_tetro(tetro *tet, int curr_r)
 {
 	int curr_x, curr_y, mid_x, mid_y;
-	mid_x = tetromino[sh][1].x[1];
-	mid_y = tetromino[sh][1].y[1];
+	mid_x = tetromino[sh][curr_rot].x[1];
+	mid_y = tetromino[sh][curr_rot].y[1];
 	curr_x = tet->x[1];
 	curr_y = tet->y[1];
 	for (int i = 0; i < 4; i++) {
-		tet->x[i] = (tetromino[sh][1].x[i] - mid_x) + curr_x;
-		tet->y[i] = (tetromino[sh][1].y[i] - mid_y) + curr_y;
+		tet->x[i] = (tetromino[sh][curr_rot].x[i] - mid_x) + curr_x;
+		tet->y[i] = (tetromino[sh][curr_rot].y[i] - mid_y) + curr_y;
 	}
 	return;
 }
@@ -87,9 +89,22 @@ void update_x(tetro *tet, int dir)
 bool is_coll(tetro tet)
 {
 	for (int i = 0; i < 4; i++) 
-		if (tet.y[i] >= HEIGHT || tet.x[i] >= WIDTH || game_board[tet.y[i]][tet.x[i]].block)
+		if (tet.y[i] >= HEIGHT || tet.x[i] < 0 || tet.x[i] >= WIDTH || game_board[tet.y[i]][tet.x[i]].block)
 			return true;
 	return false;
+}
+
+void tetromino_fall(tetro *tet, float ms)
+{
+	tetro tmp = *tet;
+	update_y(&tmp);
+	if (!is_coll(tmp)) {
+		*tet = tmp;
+		draw_tetro(*tet);
+		refresh();
+		napms(ms);
+	}
+	return;
 }
 
 void blocks_inBoard()
@@ -101,7 +116,7 @@ void blocks_inBoard()
 	return;
 }
 
-bool is_rowTrue(int row)
+bool is_rowFull(int row)
 {  
 		for (int i = 0; i < WIDTH; i+=2)
 			if (game_board[row][i].block == false)
@@ -111,31 +126,30 @@ bool is_rowTrue(int row)
 
 void update_Boardblock()
 {
-	int fullrow[20];
+	int non_fullrow[20];
 	bool need_updation = false;
-	for (int y = HEIGHT - 1; y > 0; y--) {
-		if (!(is_rowTrue(y))) {
-			fullrow[y] = 0;
+	for (int i = HEIGHT - 1; i > 0; i--) {
+		if (!is_rowFull(i)) { 
+			non_fullrow[i] = i;
 			continue;
-		}else
-			need_updation = true;
-		fullrow[y] = y;
+		}
+		need_updation = true;
 	}
 	if (!need_updation)
 		return;
-	int tm;
-	for (int y = HEIGHT - 1; y > 0; y--) {
-		tm = y;
-		if (y == fullrow[y])
-		//	tm = y - 1;
-		for (int x = 0; x < WIDTH; x += 2) {
-			second_board[y][x].block = game_board[tm - 1][x].block;
-		}
+	int y = HEIGHT - 1;
+	int s_y = HEIGHT - 1;
+	while (y != 0) {
+		if (non_fullrow[y] > 0 && non_fullrow[y] < 20) {
+		memcpy(second_board[s_y], game_board[y], sizeof(table) * WIDTH);
+		s_y--;
 	}
-	for (int y = 0; y < HEIGHT; y++)
-		for (int x = 0; x < WIDTH; x += 2)
-			game_board[y][x].block = second_board[y][x].block;
+		y--;
+	}
+	for (int y = HEIGHT - 1; y > 0; y--) {
+		memcpy(game_board[y], second_board[y], sizeof(table) * WIDTH);
+	}
 	return;
 }
 
-	
+		

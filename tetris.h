@@ -20,7 +20,17 @@ typedef enum {
 	T = 6,
 } shape;
 
+typedef enum {
+	LEFT_WALL = 0,
+	RIGHT_WALL = 1,
+	BOTTOM = 2,
+	TOP = 3,
+	BLOCK_FELL = 4
+} collision;
+	
 extern shape curr_shape;
+
+extern int curr_rot;
 
 void place_InMid(tetro *tet);
 
@@ -38,7 +48,9 @@ bool is_coll(tetro tet);
 
 void blocks_inBoard();
 
-bool is_rowTrue(int row);
+void tetromino_fall(tetro *tet, float ms);
+
+bool is_rowFull(int row);
 
 void update_Boardblock();
 #endif

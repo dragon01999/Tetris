@@ -13,10 +13,13 @@ void input(tetro *tet)
 				*tet = tmp;
 			break;
 		case KEY_LEFT:
-			update_x(tet, -2);
+			update_x(&tmp, -2);
+			if (!is_coll(tmp))
+				*tet = tmp;
 			break;
 		case KEY_UP:
-			rotate_tetro(tet, 1);
+			curr_rot = (curr_rot + 1) % 4;
+			rotate_tetro(tet, curr_rot);
 			break;
 		default:
 			break;
