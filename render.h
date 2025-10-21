@@ -3,11 +3,12 @@
 #define RENDER_H
 
 #include "tetris.h"
-// HEIGHT is 20 cuz each block in a tetromino is depicted using []
+// WIDTH is 20 cuz each block in a tetromino is depicted using []
 #define WIDTH 20
 #define HEIGHT 20
 extern int MAX_X, MAX_Y;
 
+extern int mid;
 
 void init_rinfo();
 

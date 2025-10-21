@@ -1,10 +1,13 @@
 #include <stdbool.h>
+#include <stdlib.h>
 #include <ncurses.h>
 #include "tetris.h"
 #include "render.h"
 
 table game_board[HEIGHT][WIDTH];
-int sh = 0;
+table second_board[HEIGHT][WIDTH];
+table *curr_board, *tmp_board;
+int sh;
 static tetro tetromino[7][4] = {
 	[I] = {
 		//0
@@ -20,14 +23,29 @@ static tetro tetromino[7][4] = {
 	[O] = {
 		{ .x = {0, 2, 0, 2}, .y = {0, 0, 1, 1} }
 	},
-};
+	[J] = {                                                       { .x = {0,0,2,4}, .y = {0,1,2,2} },                   { .x = {0,2,2,2}, .y = {0,0,1,2} },                   { .x = {2,4,2,2}, .y = {0,0,1,2} },                   { .x = {0,2,4,4}, .y = {1,1,1,2} }            },                                                                                                          [L] = {                                                       { .x = {4,0,2,4}, .y = {0,1,1,1} },                   { .x = {2,2,2,4}, .y = {0,1,2,2} },                   { .x = {0,2,4,0}, .y = {1,1,1,2} },                   { .x = {0,2,2,2}, .y = {0,0,1,2} }            },                                                                                                          [S] = {                                                       { .x = {2,4,0,2}, .y = {0,0,1,1} },
+		    { .x = {0,0,2,2}, .y = {0,1,1,2} },
+	        { .x = {2,4,0,2}, .y = {1,1,2,2} },                   { .x = {2,2,4,4}, .y = {0,1,1,2} }            },
+	[Z] = {                                                       { .x = {0,2,2,4}, .y = {0,0,1,1} },                   { .x = {2,0,2,0}, .y = {0,1,1,2} },
+		    { .x = {0,2,2,4}, .y = {1,1,2,2} },                   { .x = {2,0,2,0}, .y = {0,1,1,2} }
+    },
+	                                                      [T] = {                                                       { .x = {2,0,2,4}, .y = {0,1,1,1} },                   { .x = {2,2,2,4}, .y = {0,1,2,1} },                   { .x = {0,2,4,2}, .y = {1,1,1,2} },                   { .x = {0,2,2,2}, .y = {1,0,1,2} }            },                                           
+};	
 
 
+void place_InMid(tetro *tet)
+{
+	for (int i = 0; i < 4; i++) {
+		tet->x[i] +=  mid/2 + WIDTH;
+	}
+	return;
+}
 void rand_tetro(tetro *tet)
 {
 	init_rinfo();
-//	shape sh = (rand() % 7);
-	*tet = tetromino[1][0];
+	sh = (rand() % 7);
+	*tet = tetromino[sh][0];
+//	place_InMid(tet);
 	return;
 }
 
@@ -45,7 +63,7 @@ void rotate_tetro(tetro *tet, int curr_r)
 	return;
 }
 
-void update_GameBoard(tetro tet)
+void store_tetromino(tetro tet)
 {
 	for (int i = 0; i < 4; i++) 
 		game_board[tet.y[i]][tet.x[i]].block = true;
@@ -55,7 +73,7 @@ void update_GameBoard(tetro tet)
 void update_y(tetro *tet)
 {
 	for (int i = 0; i < 4; i++)
-		tet->y[i] += 1;
+		tet->y[i]++;
 	return;
 }
 
@@ -69,7 +87,7 @@ void update_x(tetro *tet, int dir)
 bool is_coll(tetro tet)
 {
 	for (int i = 0; i < 4; i++) 
-		if (tet.y[i] >= HEIGHT || game_board[tet.y[i]][tet.x[i]].block)
+		if (tet.y[i] >= HEIGHT || tet.x[i] >= WIDTH || game_board[tet.y[i]][tet.x[i]].block)
 			return true;
 	return false;
 }
@@ -83,5 +101,41 @@ void blocks_inBoard()
 	return;
 }
 
+bool is_rowTrue(int row)
+{  
+		for (int i = 0; i < WIDTH; i+=2)
+			if (game_board[row][i].block == false)
+				return false;
+		return true;
+}
 
+void update_Boardblock()
+{
+	int fullrow[20];
+	bool need_updation = false;
+	for (int y = HEIGHT - 1; y > 0; y--) {
+		if (!(is_rowTrue(y))) {
+			fullrow[y] = 0;
+			continue;
+		}else
+			need_updation = true;
+		fullrow[y] = y;
+	}
+	if (!need_updation)
+		return;
+	int tm;
+	for (int y = HEIGHT - 1; y > 0; y--) {
+		tm = y;
+		if (y == fullrow[y])
+		//	tm = y - 1;
+		for (int x = 0; x < WIDTH; x += 2) {
+			second_board[y][x].block = game_board[tm - 1][x].block;
+		}
+	}
+	for (int y = 0; y < HEIGHT; y++)
+		for (int x = 0; x < WIDTH; x += 2)
+			game_board[y][x].block = second_board[y][x].block;
+	return;
+}
 
+	

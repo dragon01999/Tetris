@@ -22,11 +22,13 @@ typedef enum {
 
 extern shape curr_shape;
 
+void place_InMid(tetro *tet);
+
 void rand_tetro(tetro *tet);
 
 void rotate_tetro(tetro *tet, int curr_r);
 
-void update_GameBoard(tetro tet);
+void store_tetromino(tetro tet);
 
 void update_y(tetro *tet);
 
@@ -36,5 +38,8 @@ bool is_coll(tetro tet);
 
 void blocks_inBoard();
 
+bool is_rowTrue(int row);
+
+void update_Boardblock();
 #endif
 		
