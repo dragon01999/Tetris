@@ -7,7 +7,6 @@
 
 table game_board[HEIGHT][WIDTH];
 table second_board[HEIGHT][WIDTH];
-table *curr_board, *tmp_board;
 int sh, curr_rot;
 static tetro tetromino[7][4] = {
 	[I] = {
@@ -33,21 +32,35 @@ static tetro tetromino[7][4] = {
 	                                                      [T] = {                                                       { .x = {2,0,2,4}, .y = {0,1,1,1} },                   { .x = {2,2,2,4}, .y = {0,1,2,1} },                   { .x = {0,2,4,2}, .y = {1,1,1,2} },                   { .x = {0,2,2,2}, .y = {1,0,1,2} }            },                                           
 };	
 
+void screen_to_logic(tetro *tet)
+{
+	for (int i = 0; i < 4; i++)
+		tet->x[i] = (tet->x[i] - left_x) / 2;
+	return;
+}
+
+void logic_to_screen(tetro *tet)
+{
+	for (int i = 0; i < 4; i++)
+		tet->x[i] += left_x + 1;
+	return;
+}
 
 void place_InMid(tetro *tet)
 {
 	for (int i = 0; i < 4; i++) {
-		tet->x[i] +=  mid/2 + WIDTH - 2;
+		tet->x[i] +=  BOARD_WIDTH/2 - 4;
 	}
 	return;
 }
 void rand_tetro(tetro *tet)
 {
-	init_rinfo();
+	init_BoardInfo();
 	sh = (rand() % 7);
-	*tet = tetromino[1][0];
+	*tet = tetromino[sh][0];
 	curr_rot = 0;
-	place_InMid(tet);
+	logic_to_screen(tet);
+    place_InMid(tet);
 	return;
 }
 
@@ -67,8 +80,9 @@ void rotate_tetro(tetro *tet, int curr_r)
 
 void store_tetromino(tetro tet)
 {
+	screen_to_logic(&tet);
 	for (int i = 0; i < 4; i++) 
-		game_board[tet.y[i]][tet.x[i] - 18].block = true;
+		game_board[tet.y[i]][tet.x[i] /* 18*/].block = true;
 	return;
 }
 
@@ -86,12 +100,18 @@ void update_x(tetro *tet, int dir)
 	return;
 }
 
-bool is_coll(tetro tet)
+int is_coll(tetro tet)
 {
-	for (int i = 0; i < 4; i++) 
-		if (tet.y[i] >= HEIGHT || tet.x[i] < mid || tet.x[i] >= WIDTH + mid || game_board[tet.y[i]][tet.x[i]- 18].block)
-			return true;
-	return false;
+	tetro tmp = tet;
+	screen_to_logic(&tmp);
+	for (int i = 0; i < 4; i++) { 
+		if (tet.y[i] >= BOARD_HEIGHT || tet.x[i] < left_x + 1 || tet.x[i] > right_x)
+			return 1;
+		if (game_board[tmp.y[i]][tmp.x[i]].block) {
+			return 2;
+		}
+	}
+	return 0;
 }
 
 void tetromino_fall(tetro *tet, float ms)
@@ -109,16 +129,22 @@ void tetromino_fall(tetro *tet, float ms)
 
 void blocks_inBoard()
 {
-	for (int i = 0; i < HEIGHT; i++)
-		for (int k = 0; k < WIDTH; k += 2)
-			if(game_board[i][k].block == true)
-				mvprintw(i, k + 18, "[]");
+//	nodelay(stdscr, FALSE);
+	for (int y = 0; y < HEIGHT; y++)
+		for (int x = 0; x < WIDTH; x++)
+			if(game_board[y][x].block == true) {
+//				fprintf(stderr,"y:%d x:%d\n",y,x);
+				mvprintw(y, x * 2 + left_x + 1, "[]");
+	//				getch();
+			}
+//	nodelay(stdscr, TRUE);
+				//mvprintw(i, k * 2 + 15, "[]");
 	return;
 }
 
 bool is_rowFull(int row)
 {  
-		for (int i = 0; i < WIDTH; i+=2)
+		for (int i = 0; i < WIDTH; i++)
 			if (game_board[row][i].block == false)
 				return false;
 		return true;

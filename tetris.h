@@ -1,6 +1,10 @@
 #ifndef TETRIS_H
 #define TETRIS_H
 #include <stdint.h>
+
+#define HEIGHT 20 //DIMENSIONS OF GAMEBOARD
+#define WIDTH 10 
+
 typedef struct tetro {
 	int x[4];
 	int y[4];
@@ -44,7 +48,7 @@ void update_y(tetro *tet);
 
 void update_x(tetro *tet, int dir);
 
-bool is_coll(tetro tet);
+int is_coll(tetro tet);
 
 void blocks_inBoard();
 

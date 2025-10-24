@@ -25,7 +25,9 @@ void input(tetro *tet)
 			break;
 		case KEY_UP:
 			curr_rot = (curr_rot + 1) % 4;
-			rotate_tetro(tet, curr_rot);
+			rotate_tetro(&tmp, curr_rot);
+			if (!is_coll(tmp))
+                *tet = tmp;
 			break;
 		default:
 			break;

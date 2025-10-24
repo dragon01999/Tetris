@@ -4,13 +4,14 @@
 
 #include "tetris.h"
 // WIDTH is 20 cuz each block in a tetromino is depicted using []
-#define WIDTH 20
-#define HEIGHT 20
+#define BOARD_WIDTH 20
+#define BOARD_HEIGHT 20
 extern int MAX_X, MAX_Y;
 
-extern int mid;
+extern int left_x; //left side wall
+extern int right_x; //right side wall 
 
-void init_rinfo();
+void init_BoardInfo();
 
 void draw_hor(int x, int y, int times, char *obj, int obj_len);
 
