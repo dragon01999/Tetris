@@ -5,9 +5,11 @@
 #include "tetris.h"
 #include "render.h"
 
+//actual game board which will track stored tetrominos
 table game_board[HEIGHT][WIDTH];
-table second_board[HEIGHT][WIDTH];
-int sh, curr_rot;
+//tmp board 
+table tmp_board[HEIGHT][WIDTH];
+int sh, curr_rot; 
 static tetro tetromino[7][4] = {
 	[I] = {
 		//0
@@ -53,7 +55,7 @@ void place_InMid(tetro *tet)
 	}
 	return;
 }
-void rand_tetro(tetro *tet)
+void generate_tetromino(tetro *tet)
 {
 	init_BoardInfo();
 	sh = (rand() % 7);
@@ -64,7 +66,7 @@ void rand_tetro(tetro *tet)
 	return;
 }
 
-void rotate_tetro(tetro *tet, int curr_r)
+void rotate_tetromino(tetro *tet, int curr_r)
 {
 	int curr_x, curr_y, mid_x, mid_y;
 	mid_x = tetromino[sh][curr_rot].x[1];
@@ -127,22 +129,17 @@ void tetromino_fall(tetro *tet, float ms)
 	return;
 }
 
-void blocks_inBoard()
+void print_stored_tetromino()
 {
-//	nodelay(stdscr, FALSE);
 	for (int y = 0; y < HEIGHT; y++)
 		for (int x = 0; x < WIDTH; x++)
 			if(game_board[y][x].block == true) {
-//				fprintf(stderr,"y:%d x:%d\n",y,x);
 				mvprintw(y, x * 2 + left_x + 1, "[]");
-	//				getch();
 			}
-//	nodelay(stdscr, TRUE);
-				//mvprintw(i, k * 2 + 15, "[]");
 	return;
 }
 
-bool is_rowFull(int row)
+bool is_row_full(int row)
 {  
 		for (int i = 0; i < WIDTH; i++)
 			if (game_board[row][i].block == false)
@@ -150,12 +147,12 @@ bool is_rowFull(int row)
 		return true;
 }
 
-void update_Boardblock()
+void clear_row()
 {
 	int non_fullrow[20];
 	bool need_updation = false;
 	for (int i = HEIGHT - 1; i > 0; i--) {
-		if (!is_rowFull(i)) { 
+		if (!is_row_full(i)) { 
 			non_fullrow[i] = i;
 			continue;
 		}
@@ -167,13 +164,13 @@ void update_Boardblock()
 	int s_y = HEIGHT - 1;
 	while (y != 0) {
 		if (non_fullrow[y] > 0 && non_fullrow[y] < 20) {
-		memcpy(second_board[s_y], game_board[y], sizeof(table) * WIDTH);
+		memcpy(tmp_board[s_y], game_board[y], sizeof(table) * WIDTH);
 		s_y--;
 	}
 		y--;
 	}
 	for (int y = HEIGHT - 1; y > 0; y--) {
-		memcpy(game_board[y], second_board[y], sizeof(table) * WIDTH);
+		memcpy(game_board[y], tmp_board[y], sizeof(table) * WIDTH);
 	}
 	return;
 }

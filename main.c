@@ -7,14 +7,12 @@
 #include "input.h"
 
 int main(int argc, char **argv) {
-	initscr();
-	cbreak();
-	keypad(stdscr, TRUE);
-	nodelay(stdscr, TRUE);
+
+	init_curses();
 	init_BoardInfo();
 	srand(time(NULL));
 	tetro tetromino, tmp;
-	rand_tetro(&tetromino);
+	generate_tetromino(&tetromino);
 	bool coll = false;
 	int c = 0;
 	for (int i = 0; i < 1000; i++) {
@@ -27,12 +25,12 @@ int main(int argc, char **argv) {
 			tetromino = tmp;
 		if (c == 1 || c == 2) {
 			store_tetromino(tetromino);
-			rand_tetro(&tetromino);
+			generate_tetromino(&tetromino);
 		}
-		update_Boardblock();
+		clear_row();
 		draw_board();
 		draw_tetro(tetromino);
-		blocks_inBoard();
+		print_stored_tetromino();
 		refresh();
 		getch();
 		napms(300);

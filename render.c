@@ -3,12 +3,31 @@
 
 int MAX_X, MAX_Y;
 int left_x, right_x;
+
+void init_curses()
+{
+	initscr();
+    cbreak();
+    keypad(stdscr, TRUE);
+    nodelay(stdscr, TRUE);
+	noecho();
+	if (has_colors()) {
+		start_color();
+		use_default_colors();
+		init_pair(I_PIECE, COLOR_CYAN, -1);
+		init_pair(O_PIECE, COLOR_YELLOW, -1);
+		init_pair(J_PIECE, COLOR_BLUE, -1);
+		init_pair(L_PIECE, COLOR_ORANGE, -1);
+		init_pair(S_PIECE, COLOR_GREEN, -1);
+		init_pair(Z_PIECE, COLOR_RED, -1);
+		init_pair(T_PIECE, COLOR_MAGENTA, -1);
+	}
+}
 void init_BoardInfo()
 {
 	getmaxyx(stdscr, MAX_Y, MAX_X);
 	left_x = (MAX_X - BOARD_WIDTH) / 2;
 	right_x = left_x + BOARD_WIDTH;
-//	mvprintw(MAX_Y/2, mid, "HELLOWORLDHELLOWORLD");
 
 }
 
@@ -26,20 +45,24 @@ void draw_ver(int x, int y, int times, char *obj)
 }
 
 void draw_board()
-{	
+{
+	attron(COLOR_PAIR(BOARD_COLOR));
 	for (int i = 0; i < BOARD_HEIGHT; i++)
-		draw_hor(left_x, i, BOARD_WIDTH, "`", 1);
-	draw_hor(left_x, BOARD_HEIGHT - 1, BOARD_WIDTH, "=", 1);
-	draw_hor(left_x, BOARD_HEIGHT, BOARD_WIDTH, "/\\", 2);
-	draw_ver(left_x - 1, 0, BOARD_HEIGHT, ">!");
-	draw_ver(left_x + BOARD_WIDTH, 0, BOARD_HEIGHT, "!<");
+		draw_hor(left_x, i, BOARD_WIDTH + 1, "`", 1);
+	draw_hor(left_x, BOARD_HEIGHT, BOARD_WIDTH + 1, "=", 1);
+	draw_hor(left_x, BOARD_HEIGHT + 1, BOARD_WIDTH, "\\/", 2);
+	draw_ver(left_x - 1, 0, BOARD_HEIGHT + 1, ">!");
+	draw_ver(left_x + BOARD_WIDTH + 1, 0, BOARD_HEIGHT + 1, "!<");
+	attroff(COLOR_PAIR(BOARD_COLOR));
 }
 
 void draw_tetro(tetro tet)
 {
+	attron(COLOR_PAIR(sh));
 	for (int i = 0; i < 4; i++) {
 		mvprintw(tet.y[i], tet.x[i], "[]");
 	}
+	attroff(COLOR_PAIR(sh));
 	return;
 }
     

@@ -14,6 +14,7 @@ void input(tetro *tet)
 	ch = getch();
 	switch(ch) {
 		case KEY_RIGHT:
+			beep();
 			update_x(&tmp,2);
 			if (!is_coll(tmp))
 				*tet = tmp;
@@ -25,7 +26,7 @@ void input(tetro *tet)
 			break;
 		case KEY_UP:
 			curr_rot = (curr_rot + 1) % 4;
-			rotate_tetro(&tmp, curr_rot);
+			rotate_tetromino(&tmp, curr_rot);
 			if (!is_coll(tmp))
                 *tet = tmp;
 			break;
