@@ -17,8 +17,7 @@ int main(int argc, char **argv) {
 	while (game_status) {
 		keypressed(&tetromino);
 		if (!tetromino_fall(&tetromino)) {                            store_tetromino(tetromino);
-                clear_row();
-				clean_next();
+                clear_row(); 
 				generate_tetromino(&tetromino);               }
 		draw_board();                                         print_stored_tetromino();
 		clean_tetromino(tetromino, "`");

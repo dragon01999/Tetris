@@ -33,6 +33,8 @@ void draw_ver(int x, int y, int times, char *obj);
 
 void draw_board();
 
-void draw_tetro(tetro tet);
+void draw_tetro(tetro tet, int piece);
+
+void clean_tetromino(tetro tet, char *str);
 
 #endif

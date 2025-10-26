@@ -10,6 +10,7 @@ void init_curses()
     cbreak();
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
+	curs_set(0);
 	noecho();
 	if (has_colors()) {
 		start_color();
@@ -56,14 +57,22 @@ void draw_board()
 	attroff(COLOR_PAIR(BOARD_COLOR));
 }
 
-void draw_tetro(tetro tet)
+void draw_tetro(tetro tet, int piece)
 {
-	attron(COLOR_PAIR(sh));
+	attron(COLOR_PAIR(piece));
 	for (int i = 0; i < 4; i++) {
 		mvprintw(tet.y[i], tet.x[i], "[]");
 	}
-	attroff(COLOR_PAIR(sh));
+	attroff(COLOR_PAIR(piece));
 	return;
 }
-    
+
+void clean_tetromino(tetro tet, char *str)
+{
+	attron(COLOR_PAIR(BOARD_COLOR));
+	for (int i = 0; i < 4; i++) 
+		mvprintw(tet.y[i], tet.x[i], "%s",str);	
+	attroff(COLOR_PAIR(BOARD_COLOR));
+	return;
+}
 

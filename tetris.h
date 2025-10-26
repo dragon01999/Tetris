@@ -30,7 +30,7 @@ typedef enum {
 } shape;
 
 extern int curr_rot;
-extern int sh;
+extern int next, curr_piece;
 
 /* to place tetromino in middle */
 void place_InMid(tetro *tet);
@@ -46,11 +46,14 @@ void update_y(tetro *tet);
 void update_x(tetro *tet, int dir);
 
 /* to detect collisions */
-bool is_coll(tetro tet);
+int is_coll(tetro tet);
 
 void print_stored_tetromino();
 
-void tetromino_fall(tetro *tet, float ms);
+void print_next_tetromino();
+                                                      void clean_next();
+
+bool tetromino_fall(tetro *tet);
 
 bool is_row_full(int row);
 
