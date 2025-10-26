@@ -15,6 +15,7 @@ typedef struct tetro {
 /* table aka matrix or board */
 typedef struct table {
 	bool block;
+	uint8_t color;
 } table;
 
 /* tetromino shapes */
@@ -28,15 +29,6 @@ typedef enum {
 	T = 6,
 } shape;
 
-/* collison types */
-typedef enum {
-	LEFT_WALL = 0,
-	RIGHT_WALL = 1,
-	BOTTOM = 2,
-	TOP = 3,
-	BLOCK = 4
-} collision;
-	
 extern int curr_rot;
 extern int sh;
 
@@ -54,7 +46,7 @@ void update_y(tetro *tet);
 void update_x(tetro *tet, int dir);
 
 /* to detect collisions */
-int is_coll(tetro tet);
+bool is_coll(tetro tet);
 
 void print_stored_tetromino();
 

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
@@ -6,6 +5,7 @@
 #include "render.h"
 #include "input.h"
 
+bool game_status = true;
 int main(int argc, char **argv) {
 
 	init_curses();
@@ -14,26 +14,23 @@ int main(int argc, char **argv) {
 	tetro tetromino, tmp;
 	generate_tetromino(&tetromino);
 	bool coll = false;
-	int c = 0;
-	for (int i = 0; i < 1000; i++) {
-//		input(&tetromino);
-		keypressed(&tetromino);
+	while (game_status) {
 		tmp = tetromino;
+//		keypressed(&tmp);
 		update_y(&tmp);
-		c = is_coll(tmp);
-		if (c == 0)
-			tetromino = tmp;
-		if (c == 1 || c == 2) {
-			store_tetromino(tetromino);
-			generate_tetromino(&tetromino);
+		if(!is_coll(tmp))                                         tetromino = tmp;
+		else {
+            store_tetromino(tetromino);
+            generate_tetromino(&tetromino);
 		}
+		keypressed(&tetromino);
 		clear_row();
 		draw_board();
 		draw_tetro(tetromino);
 		print_stored_tetromino();
 		refresh();
 		getch();
-		napms(300);
+		napms(400);
 		clear();
 	}
 		

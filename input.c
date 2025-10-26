@@ -2,10 +2,11 @@
 #include <time.h>
 #include <ncurses.h>
 #include "tetris.h"
+#include "beep.h"
 
 struct timespec start;
 long long end_ms, curr_ms;
-float wait_ms = 100;
+float delay = 20;
 
 void input(tetro *tet)
 {
@@ -30,6 +31,11 @@ void input(tetro *tet)
 			if (!is_coll(tmp))
                 *tet = tmp;
 			break;
+		case KEY_DOWN:
+			update_y(&tmp);
+			if (!is_coll(tmp))
+				*tet = tmp;
+			break;
 		default:
 			break;
 	}
@@ -39,7 +45,7 @@ void input(tetro *tet)
 void keypressed(tetro *tetromino)
 {
 	clock_gettime(CLOCK_MONOTONIC, &start);
-	end_ms = (start.tv_sec * 1000) + 10  + (start.tv_nsec/1000000);
+	end_ms = (start.tv_sec * 1000) + delay  + (start.tv_nsec/1000000);
 curr_ms = start.tv_sec * 1000 + (start.tv_nsec / 1000000);
 	while (curr_ms <= end_ms) {
 		clock_gettime(CLOCK_MONOTONIC, &start);

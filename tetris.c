@@ -25,7 +25,7 @@ static tetro tetromino[7][4] = {
 	[O] = {
 		{ .x = {0, 2, 0, 2}, .y = {0, 0, 1, 1} }
 	},
-	[J] = {                                                       { .x = {0,0,2,4}, .y = {0,1,2,2} },                   { .x = {0,2,2,2}, .y = {0,0,1,2} },                   { .x = {2,4,2,2}, .y = {0,0,1,2} },                   { .x = {0,2,4,4}, .y = {1,1,1,2} }            },                                                                                                          [L] = {                                                       { .x = {4,0,2,4}, .y = {0,1,1,1} },                   { .x = {2,2,2,4}, .y = {0,1,2,2} },                   { .x = {0,2,4,0}, .y = {1,1,1,2} },                   { .x = {0,2,2,2}, .y = {0,0,1,2} }            },                                                                                                          [S] = {                                                       { .x = {2,4,0,2}, .y = {0,0,1,1} },
+	[J] = {                                                       { .x = {0,0,2,4}, .y = {0,1,1,1} },                   { .x = {0,2,2,2}, .y = {0,0,1,2} },                   { .x = {2,4,2,2}, .y = {0,0,1,2} },                   { .x = {0,2,4,4}, .y = {1,1,1,2} }            },                                                                                                          [L] = {                                                       { .x = {0,0,2,4}, .y = {0,1,1,1} },                   { .x = {2,2,2,4}, .y = {0,1,2,2} },                   { .x = {0,2,4,0}, .y = {1,1,1,2} },                   { .x = {0,2,2,2}, .y = {0,0,1,2} }            },                                                                                                          [S] = {                                                       { .x = {2,4,0,2}, .y = {0,0,1,1} },
 		    { .x = {0,0,2,2}, .y = {0,1,1,2} },
 	        { .x = {2,4,0,2}, .y = {1,1,2,2} },                   { .x = {2,2,4,4}, .y = {0,1,1,2} }            },
 	[Z] = {                                                       { .x = {0,2,2,4}, .y = {0,0,1,1} },                   { .x = {2,0,2,0}, .y = {0,1,1,2} },
@@ -83,8 +83,10 @@ void rotate_tetromino(tetro *tet, int curr_r)
 void store_tetromino(tetro tet)
 {
 	screen_to_logic(&tet);
-	for (int i = 0; i < 4; i++) 
-		game_board[tet.y[i]][tet.x[i] /* 18*/].block = true;
+	for (int i = 0; i < 4; i++) { 
+		game_board[tet.y[i]][tet.x[i]].block = true;
+		game_board[tet.y[i]][tet.x[i]].color = sh;
+	}
 	return;
 }
 
@@ -102,18 +104,17 @@ void update_x(tetro *tet, int dir)
 	return;
 }
 
-int is_coll(tetro tet)
+bool is_coll(tetro tet)
 {
 	tetro tmp = tet;
 	screen_to_logic(&tmp);
-	for (int i = 0; i < 4; i++) { 
-		if (tet.y[i] >= BOARD_HEIGHT || tet.x[i] < left_x + 1 || tet.x[i] > right_x)
-			return 1;
-		if (game_board[tmp.y[i]][tmp.x[i]].block) {
-			return 2;
-		}
+	for (int i = 0; i < 4; i++) {
+		if (game_board[tmp.y[i]][tmp.x[i]].block || tet.y[i] >= HEIGHT)
+			return true;
+		if (tet.x[i] > right_x || tet.x[i] < left_x + 1) 
+			return true;
 	}
-	return 0;
+	return false;
 }
 
 void tetromino_fall(tetro *tet, float ms)
@@ -131,11 +132,15 @@ void tetromino_fall(tetro *tet, float ms)
 
 void print_stored_tetromino()
 {
-	for (int y = 0; y < HEIGHT; y++)
-		for (int x = 0; x < WIDTH; x++)
+	for (int y = 0; y < HEIGHT; y++) {
+		for (int x = 0; x < WIDTH; x++) {
 			if(game_board[y][x].block == true) {
-				mvprintw(y, x * 2 + left_x + 1, "[]");
+				attron(COLOR_PAIR(game_board[y][x].color));
+				mvprintw(y, x * 2 + left_x + 1, "[]");                attroff(COLOR_PAIR(game_board[y][x].color));	
+
 			}
+		}
+	}
 	return;
 }
 
