@@ -31,6 +31,7 @@ typedef enum {
 
 extern int curr_rot;
 extern int next, curr_piece;
+extern static int cleared_lines, total_cleared_lines;
 
 /* to place tetromino in middle */
 void place_InMid(tetro *tet);

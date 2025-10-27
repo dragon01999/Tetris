@@ -9,9 +9,9 @@
 table game_board[HEIGHT][WIDTH];
 //tmp board 
 table tmp_board[HEIGHT][WIDTH];
-int next = -1, curr_piece, curr_rot; 
+int next = -1, curr_piece, curr_rot;
+static int cleared_lines, total_cleared_lines;
 tetro next_tetro;
-
 /* X coordinates are stored as X*2 or X+1 since each tetromino block is printed as [] */
 static tetro tetromino[7][4] = {
 	[I] = {
@@ -140,7 +140,7 @@ int is_coll(tetro tet)
 }
 
 /* make the piece fall by 1. returns false to indicate
- no collision has occured and spawn is not required */
+ no collision has occured so spawn is not required */
 bool tetromino_fall(tetro *tet)
 {
 	tetro tmp = *tet;
@@ -197,7 +197,8 @@ bool is_row_full(int row)
 
 /* Deletes the full rows */
 void clear_row()
-{
+{   
+	cleared_lines = 0;
 	int non_fullrow[20];
 	bool need_updation = false;
 	for (int i = HEIGHT - 1; i > 0; i--) {
@@ -206,6 +207,8 @@ void clear_row()
 			non_fullrow[i] = i;
 			continue;
 		}
+/* for every full row increment cleared_lines */
+		cleared_lines++; 
 		need_updation = true;
 	}
 	if (!need_updation)
@@ -226,6 +229,8 @@ void clear_row()
 	for (int y = HEIGHT - 1; y > 0; y--) {
 		memcpy(game_board[y], tmp_board[y], sizeof(table) * WIDTH);
 	}
+	/* update total cleared lines. */
+	total_cleared_lines += cleared_lines;
 	return;
 }
 
