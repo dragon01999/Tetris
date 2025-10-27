@@ -8,4 +8,6 @@
 
 void update_scores(int *score, int *lvl);
 
+void print_scores_lvl(int score, int lvl);
+
 #endif

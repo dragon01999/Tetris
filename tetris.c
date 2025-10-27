@@ -10,7 +10,7 @@ table game_board[HEIGHT][WIDTH];
 //tmp board 
 table tmp_board[HEIGHT][WIDTH];
 int next = -1, curr_piece, curr_rot;
-static int cleared_lines, total_cleared_lines;
+int cleared_lines, total_cleared_lines;
 tetro next_tetro;
 /* X coordinates are stored as X*2 or X+1 since each tetromino block is printed as [] */
 static tetro tetromino[7][4] = {
