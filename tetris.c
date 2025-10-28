@@ -7,7 +7,7 @@
 
 //actual game board which will track stored tetrominos
 table game_board[HEIGHT][WIDTH];
-//tmp board 
+//tmp board
 table tmp_board[HEIGHT][WIDTH];
 int next = -1, curr_piece, curr_rot;
 int cleared_lines, total_cleared_lines;
@@ -54,7 +54,7 @@ void logic_to_screen(tetro *tet)
 }
 
 /* Places the spawned piece in middle */
-void place_InMid(tetro *tet)
+void place_in_mid(tetro *tet)
 {
 	for (int i = 0; i < 4; i++) {
 		tet->x[i] +=  BOARD_WIDTH/2 - 4;
@@ -74,27 +74,33 @@ void generate_tetromino(tetro *tet)
 	}
 	curr_piece = next;
 	next = (rand() % 7);
-
 	*tet = tetromino[curr_piece][0];
 	curr_rot = 0;
 	logic_to_screen(tet);
-    place_InMid(tet);
+    place_in_mid(tet);
 	return;
 }
 
 /* rotates pieces */
-void rotate_tetromino(tetro *tet, int curr_r)
+int rotate_tetromino(tetro *tet, int curr_r)
 {
 	int curr_x, curr_y, mid_x, mid_y;
+	/* store next rotation pivot; 1 is taken as mid */
 	mid_x = tetromino[curr_piece][curr_rot].x[1];
 	mid_y = tetromino[curr_piece][curr_rot].y[1];
+	/* stores current piece pivots */
 	curr_x = tet->x[1];
 	curr_y = tet->y[1];
 	for (int i = 0; i < 4; i++) {
+
+    /* calculate block i's X relative to its middle then offset it by current piece's mid X */
 		tet->x[i] = (tetromino[curr_piece][curr_rot].x[i] - mid_x) + curr_x;
+
+	/* calculate block i's Y relative to its middle then offset it by current piece's mid Y */
 		tet->y[i] = (tetromino[curr_piece][curr_rot].y[i] - mid_y) + curr_y;
 	}
-	return;
+
+	return 0;
 }
 
 /* stores pieces in game_board */
@@ -110,7 +116,7 @@ void store_tetromino(tetro tet)
 }
 
 /* update y for passed piece */
-void update_y(tetro *tet)
+void move_down(tetro *tet)
 {
 	for (int i = 0; i < 4; i++)
 		tet->y[i]++;
@@ -118,25 +124,40 @@ void update_y(tetro *tet)
 }
 
 /* update x for passed piece by dir which can be negative or positive */
-void update_x(tetro *tet, int dir)
+void move_direction(tetro *tet, int dir)
 {
 	for (int i = 0; i < 4; i++)
 		tet->x[i] += dir;
 	return;
 }
 
-/* check for collisions. The branching is based on priorities */
-int is_coll(tetro tet)
+/* check for wall collisions */
+bool is_colliding(tetro tet)
 {
-	tetro tmp = tet;
-	screen_to_logic(&tmp);
-	for (int i = 0; i < 4; i++) {
-		if (game_board[tmp.y[i]][tmp.x[i]].block || tet.y[i] >= HEIGHT)
-			return 1;
+	for (int i = 0; i < 4; i++) 
 		if (tet.x[i] > right_x || tet.x[i] < left_x + 1) 
-			return 2;
-	}
-	return 0;
+			return true;
+	return false;
+}
+
+/* check if piece is overlapping or hit the bottom */
+bool is_overlapping(tetro *tet)
+{
+	tetro tmp = *tet;
+	screen_to_logic(&tmp);
+	for (int i = 0; i < 4; i++) 
+		if (tet->y[i] >= BOARD_HEIGHT || game_board[tmp.y[i]][tmp.x[i]].block == true)
+			return true;
+	return false;
+}
+
+/* check if any block's Y inside a piece is hitting the ceiling and at the same time overlapping */
+bool is_game_over(tetro *tet)
+{
+	for (int i = 0; i < 4; i++) 
+		if (tet->y[i] <= 0 && is_overlapping(tet))
+			return true;
+	return false;
 }
 
 /* make the piece fall by 1. returns false to indicate
@@ -144,9 +165,10 @@ int is_coll(tetro tet)
 bool tetromino_fall(tetro *tet)
 {
 	tetro tmp = *tet;
-	update_y(&tmp);
-	if (is_coll(tmp)) 
+	move_down(&tmp);
+	if (is_overlapping(&tmp)) {
 		return false;
+	}
 	*tet = tmp;
 	return true;
 }
@@ -158,7 +180,7 @@ void print_stored_tetromino()
 		for (int x = 0; x < WIDTH; x++) {
 			if(game_board[y][x].block == true) {
 				attron(COLOR_PAIR(game_board[y][x].color));
-				/* X*2 since each block is []. offset by left wall X+1 */
+/* X*2 since each block is []. offset by left wall X+1 */
 				mvprintw(y, x * 2 + left_x + 1, "[]");                attroff(COLOR_PAIR(game_board[y][x].color));	
 
 			}
@@ -198,8 +220,10 @@ bool is_row_full(int row)
 /* Deletes the full rows */
 void clear_row()
 {   
+//	memset(tmp_board, 0, sizeof(tmp_board));
 	cleared_lines = 0;
 	int non_fullrow[20];
+	memset(non_fullrow, 0, sizeof(non_fullrow));
 	bool need_updation = false;
 	for (int i = HEIGHT - 1; i > 0; i--) {
 		if (!is_row_full(i)) {
@@ -226,9 +250,7 @@ void clear_row()
 		y--;
 	}
 	    /* write back the nonfull rows from tmp board to game_board */
-	for (int y = HEIGHT - 1; y > 0; y--) {
-		memcpy(game_board[y], tmp_board[y], sizeof(table) * WIDTH);
-	}
+	memcpy(game_board, tmp_board, sizeof(game_board));
 	/* update total cleared lines. */
 	total_cleared_lines += cleared_lines;
 	return;

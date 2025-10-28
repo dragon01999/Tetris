@@ -5,10 +5,8 @@
 
 void update_scores(int *score, int *lvl)
 {
-	if (*lvl == 0)
-		*lvl++;
-	else if ((*lvl / 10) > *lvl)
-		*lvl++;
+    if (total_cleared_lines / 10 > *lvl)
+		*lvl += 1;
 	switch(cleared_lines) {
 		case SINGLE:
 		    *score += 40 * (*lvl + 1);
@@ -30,7 +28,7 @@ void update_scores(int *score, int *lvl)
 
 void print_scores_lvl(int score, int lvl)
 {
-	mvprintw(0, 0, "score:%d    level:%d  ", score, lvl);
+	mvprintw(0, 0, "score:%d level:%d  ", score, lvl);
 }
 
 

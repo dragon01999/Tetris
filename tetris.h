@@ -33,21 +33,23 @@ extern int curr_rot;
 extern int next, curr_piece;
 extern int cleared_lines, total_cleared_lines;
 
-/* to place tetromino in middle */
-void place_InMid(tetro *tet);
+void place_in_mid(tetro *tet);
 
 void generate_tetromino(tetro *tet);
 
-void rotate_tetromino(tetro *tet, int curr_r);
+int rotate_tetromino(tetro *tet, int curr_r);
 
 void store_tetromino(tetro tet);
 
-void update_y(tetro *tet);
+void move_down(tetro *tet);
 
-void update_x(tetro *tet, int dir);
+void move_direction(tetro *tet, int dir);
 
-/* to detect collisions */
-int is_coll(tetro tet);
+void test(int n);
+
+bool is_colliding(tetro tet);
+
+bool is_overlapping(tetro *tet);
 
 void print_stored_tetromino();
 
