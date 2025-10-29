@@ -29,7 +29,7 @@ typedef enum {
 	T = 6,
 } shape;
 
-extern int curr_rot;
+extern int rot;
 extern int next, curr_piece;
 extern int cleared_lines, total_cleared_lines;
 
@@ -37,7 +37,7 @@ void place_in_mid(tetro *tet);
 
 void generate_tetromino(tetro *tet);
 
-int rotate_tetromino(tetro *tet, int curr_r);
+int rotate_tetromino(tetro *tet, int rotation);
 
 void store_tetromino(tetro tet);
 
@@ -45,11 +45,11 @@ void move_down(tetro *tet);
 
 void move_direction(tetro *tet, int dir);
 
-void test(int n);
-
 bool is_colliding(tetro tet);
 
 bool is_overlapping(tetro *tet);
+
+bool is_game_over(tetro *tet);
 
 void print_stored_tetromino();
 

@@ -8,7 +8,7 @@ struct timespec start;
 long long end_ms, curr_ms;
 float delay = 400;
 
-bool input(tetro *tet)
+bool parse_input(tetro *tet)
 {
 	tetro tmp = *tet;
 	int ch;
@@ -27,8 +27,8 @@ bool input(tetro *tet)
 				*tet = tmp;
 			break;
 		case KEY_UP:
-			curr_rot = (curr_rot + 1) % 4;
-			rotate_tetromino(&tmp, curr_rot);
+			rot = (rot + 1) % 4;
+			rotate_tetromino(&tmp, rot);
 			if (!is_colliding(tmp))
 				if (!is_overlapping(&tmp))
 				   *tet = tmp;
@@ -49,7 +49,7 @@ bool input(tetro *tet)
 	return overlap;
 }
 
-bool keypressed(tetro *tetromino)
+bool input(tetro *tetromino)
 {
 	tetro tmp;
 	clock_gettime(CLOCK_MONOTONIC, &start);
@@ -58,14 +58,13 @@ curr_ms = start.tv_sec * 1000 + (start.tv_nsec / 1000000);
     while (curr_ms <= end_ms) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		curr_ms =  start.tv_sec * 1000 + (start.tv_nsec / 1000000);
-               tmp = *tetromino;
+        tmp = *tetromino;
+	    parse_input(tetromino);
 		clean_tetromino(tmp, "``");
-	    input(tetromino);
 		flushinp();
 	    draw_tetro(*tetromino, curr_piece);
 		refresh();
-		napms(100);
-//		tmp = *tetromino;
+		napms(10);
 	}
 	return false;
 }

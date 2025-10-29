@@ -16,32 +16,24 @@ int main(int argc, char **argv) {
         generate_tetromino(&tetromino);
         int score, level;
         score = level = 0;
-		int y = 0; 
-		bool st = false;
         while (game_status) {
-			    keypressed(&tetromino);
-                if (!tetromino_fall(&tetromino)) { 
+			    input(&tetromino);
+                if (!tetromino_fall(&tetromino)) {
+				if (is_game_over(&tetromino))
+					game_status = false;
                 store_tetromino(tetromino);
                 clear_row();
                 update_scores(&score, &level);
                 print_scores_lvl(score, level);
                 clean_next();
-				st = true;
+				refresh();
                 generate_tetromino(&tetromino); 
                 }
                 draw_board();       
-				/*if(st) {
-					clear_row();
-					printw("loop y: %d times", y);
-					refresh();
-				} */
                 print_stored_tetromino();
-                clean_tetromino(tetromino, "`");
                 draw_tetro(tetromino, curr_piece);
                 print_next_tetromino();
-                refresh();
-				y++;
-                napms(300);
+                //refresh();
         }
 
         endwin();

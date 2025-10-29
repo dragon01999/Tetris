@@ -1,9 +1,9 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-bool input(tetro *tet);
+bool parse_input(tetro *tet);
 
 
-bool keypressed(tetro *tetromino);
+bool input(tetro *tetromino);
 
 #endif

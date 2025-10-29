@@ -9,20 +9,20 @@
 table game_board[HEIGHT][WIDTH];
 //tmp board
 table tmp_board[HEIGHT][WIDTH];
-int next = -1, curr_piece, curr_rot;
+int next = -1, curr_piece, rot;
 int cleared_lines, total_cleared_lines;
 tetro next_tetro;
 /* X coordinates are stored as X*2 or X+1 since each tetromino block is printed as [] */
 static tetro tetromino[7][4] = {
 	[I] = {
 		//0
-		{ .x = {0, 2, 4, 6}, .y = {1, 1, 1, 1} },
+		{ .x = {0,2,4,6}, .y = {1,1,1,1} },
 		//90
-		{ .x = {4, 4, 4, 4}, .y = {0, 1, 2, 3} },
+		{ .x = {4,4,4,4}, .y = {0,1,2,3} },
 		//180
-		{ .x = {0, 2, 4, 6}, .y = {2, 2, 2, 2} },
+		{ .x = {0,2,4,6}, .y = {2,2,2,2} },
 		//270
-		{ .x = {2, 2, 2, 2}, .y = {0, 1, 2, 3} }
+		{ .x = {2,2,2,2}, .y = {0,1,2,3} }
 
 	},
 	[O] = {
@@ -58,8 +58,9 @@ void place_in_mid(tetro *tet)
 {
 	for (int i = 0; i < 4; i++) {
 		tet->x[i] +=  BOARD_WIDTH/2 - 4;
-/* the y is being offsetted by 2 so that when a tetromino spawns it appears to be coming from above ceiling */
-		tet->y[i] -= 2;
+
+/* the y is being offsetted by 1 so that when a tetromino spawns it appears to be coming from above ceiling */
+        tet->y[i] -= 1;
 	}
 	return;
 }
@@ -75,29 +76,29 @@ void generate_tetromino(tetro *tet)
 	curr_piece = next;
 	next = (rand() % 7);
 	*tet = tetromino[curr_piece][0];
-	curr_rot = 0;
+	rot = 0;
 	logic_to_screen(tet);
     place_in_mid(tet);
 	return;
 }
 
 /* rotates pieces */
-int rotate_tetromino(tetro *tet, int curr_r)
+int rotate_tetromino(tetro *tet, int rotation)
 {
 	int curr_x, curr_y, mid_x, mid_y;
 	/* store next rotation pivot; 1 is taken as mid */
-	mid_x = tetromino[curr_piece][curr_rot].x[1];
-	mid_y = tetromino[curr_piece][curr_rot].y[1];
+	mid_x = tetromino[curr_piece][rot].x[1];
+	mid_y = tetromino[curr_piece][rot].y[1];
 	/* stores current piece pivots */
 	curr_x = tet->x[1];
 	curr_y = tet->y[1];
 	for (int i = 0; i < 4; i++) {
 
     /* calculate block i's X relative to its middle then offset it by current piece's mid X */
-		tet->x[i] = (tetromino[curr_piece][curr_rot].x[i] - mid_x) + curr_x;
+		tet->x[i] = (tetromino[curr_piece][rot].x[i] - mid_x) + curr_x;
 
 	/* calculate block i's Y relative to its middle then offset it by current piece's mid Y */
-		tet->y[i] = (tetromino[curr_piece][curr_rot].y[i] - mid_y) + curr_y;
+		tet->y[i] = (tetromino[curr_piece][rot].y[i] - mid_y) + curr_y;
 	}
 
 	return 0;
@@ -160,7 +161,7 @@ bool is_game_over(tetro *tet)
 	return false;
 }
 
-/* make the piece fall by 1. returns false to indicate
+/* make the piece fall by 1. returns true to indicate
  no collision has occured so spawn is not required */
 bool tetromino_fall(tetro *tet)
 {
@@ -189,6 +190,7 @@ void print_stored_tetromino()
 	return;
 }
 
+/* This will print the next tetromino in left side of screen */
 void print_next_tetromino()
 {
 	next_tetro = tetromino[next][0];
@@ -220,7 +222,6 @@ bool is_row_full(int row)
 /* Deletes the full rows */
 void clear_row()
 {   
-//	memset(tmp_board, 0, sizeof(tmp_board));
 	cleared_lines = 0;
 	int non_fullrow[20];
 	memset(non_fullrow, 0, sizeof(non_fullrow));
@@ -239,7 +240,7 @@ void clear_row()
 		return;
 	int y = HEIGHT - 1;
 	int s_y = HEIGHT - 1;
-	while (y != 0) {
+	while (y > 0) {
 
 		/* make sure the row numbers stored in non_full rows arent out if bounds */
 		if (non_fullrow[y] > 0 && non_fullrow[y] < 20) {
@@ -250,7 +251,9 @@ void clear_row()
 		y--;
 	}
 	    /* write back the nonfull rows from tmp board to game_board */
+
 	memcpy(game_board, tmp_board, sizeof(game_board));
+
 	/* update total cleared lines. */
 	total_cleared_lines += cleared_lines;
 	return;

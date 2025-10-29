@@ -31,4 +31,12 @@ void print_scores_lvl(int score, int lvl)
 	mvprintw(0, 0, "score:%d level:%d  ", score, lvl);
 }
 
-
+void load_score()
+{
+	FILE *in_file = fopen("scores.csv", "w");
+	if (!in_file) {
+		fprintf(stderr,"File could'nt open\n");
+		return;
+	}
+	int buff;
+}
