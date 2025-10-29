@@ -31,12 +31,28 @@ void print_scores_lvl(int score, int lvl)
 	mvprintw(0, 0, "score:%d level:%d  ", score, lvl);
 }
 
-void load_score()
+void load_score(int *highest_score)
 {
 	FILE *in_file = fopen("scores.csv", "w");
 	if (!in_file) {
 		fprintf(stderr,"File could'nt open\n");
 		return;
 	}
-	int buff;
+	if (fscanf(in_file, "%d", highest_score) == 1) {
+		//
+	} else
+		fprintf(stderr, "Error when reading from file");
+	fclose(in_file);
+	return;
+}
+
+void store_score(int highest_score)
+{
+	FILE *in_file = fopen("scores.csv", "w");
+    if (!in_file) {
+        fprintf(stderr,"File could'nt open\n");
+        return;
+    }
+	fprintf(in_file,"%d",highest_score);
+	fclose(in_file);
 }

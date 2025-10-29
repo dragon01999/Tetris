@@ -35,4 +35,10 @@ void draw_tetro(tetro tet, int piece);
 
 void clean_tetromino(tetro tet, char *str);
 
+void screen_to_logic(tetro *tet);
+
+void logic_to_screen(tetro *tet);
+
+void place_in_mid(tetro *tet);
+
 #endif

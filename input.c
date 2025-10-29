@@ -16,7 +16,6 @@ bool parse_input(tetro *tet)
 	ch = getch();
 	switch(ch) {
 		case KEY_RIGHT:
-			beep();
 			move_direction(&tmp,2);
 			if (!is_colliding(tmp) && !is_overlapping(&tmp))
 				*tet = tmp;
@@ -42,9 +41,19 @@ bool parse_input(tetro *tet)
 				*tet = tmp;
 			else if (is_overlapping(&tmp))
 				overlap = true;
-			break; 
+			break;
+		case 'p':
+			// disable nodelay so getch() waits
+			nodelay(stdscr, FALSE);
+
+			do {
+    // maybe print "Press P to continue..."
+				} while (getch() != 'p');
+			nodelay(stdscr, TRUE);
+			break;
 		case 'q':
 			exit(1);
+
 		default:
 			break;
 	}

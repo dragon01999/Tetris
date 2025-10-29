@@ -5,14 +5,14 @@
 #include "tetris.h"
 #include "render.h"
 
-//actual game board which will track stored tetrominos
+/* game board to track stored tetrominos */
 table game_board[HEIGHT][WIDTH];
-//tmp board
 table tmp_board[HEIGHT][WIDTH];
 int next = -1, curr_piece, rot;
 int cleared_lines, total_cleared_lines;
 tetro next_tetro;
-/* X coordinates are stored as X*2 or X+1 since each tetromino block is printed as [] */
+
+/* X coordinates are stored as X*2 since each tetromino block is printed as [] */
 static tetro tetromino[7][4] = {
 	[I] = {
 		//0
@@ -26,7 +26,7 @@ static tetro tetromino[7][4] = {
 
 	},
 	[O] = {
-		{ .x = {0, 2, 0, 2}, .y = {0, 0, 1, 1} }
+		    { .x = {0,2,0,2}, .y = {0,0,1,1} }
 	},
 	[J] = {                                                       { .x = {0,0,2,4}, .y = {0,1,1,1} },                   { .x = {0,2,2,2}, .y = {0,0,1,2} },                   { .x = {2,4,2,2}, .y = {0,0,1,2} },                   { .x = {0,2,4,4}, .y = {1,1,1,2} }            },                                                                                                          [L] = {                                                       { .x = {0,0,2,4}, .y = {0,1,1,1} },                   { .x = {2,2,2,4}, .y = {0,1,2,2} },                   { .x = {0,2,4,0}, .y = {1,1,1,2} },                   { .x = {0,2,2,2}, .y = {0,0,1,2} }            },                                                                                                          [S] = {                                                       { .x = {2,4,0,2}, .y = {0,0,1,1} },
 		    { .x = {0,0,2,2}, .y = {0,1,1,2} },
@@ -36,34 +36,6 @@ static tetro tetromino[7][4] = {
     },
 	                                                      [T] = {                                                       { .x = {2,0,2,4}, .y = {0,1,1,1} },                   { .x = {2,2,2,4}, .y = {0,1,2,1} },                   { .x = {0,2,4,2}, .y = {1,1,1,2} },                   { .x = {0,2,2,2}, .y = {1,0,1,2} }            },                                           
 };	
-
-/* converts X coordinates from X*2 to X/2 */
-void screen_to_logic(tetro *tet)
-{
-	for (int i = 0; i < 4; i++)
-		tet->x[i] = (tet->x[i] - left_x) / 2;
-	return;
-}
-
-/* converts actual X to X*2 */
-void logic_to_screen(tetro *tet)
-{
-	for (int i = 0; i < 4; i++)
-		tet->x[i] += left_x + 1;
-	return;
-}
-
-/* Places the spawned piece in middle */
-void place_in_mid(tetro *tet)
-{
-	for (int i = 0; i < 4; i++) {
-		tet->x[i] +=  BOARD_WIDTH/2 - 4;
-
-/* the y is being offsetted by 1 so that when a tetromino spawns it appears to be coming from above ceiling */
-        tet->y[i] -= 1;
-	}
-	return;
-}
 
 /* spawns new piece */
 void generate_tetromino(tetro *tet)
@@ -201,7 +173,11 @@ void print_next_tetromino()
 		next_tetro.x[i] += x;
 		next_tetro.y[i] += y;
 	}
-	mvprintw(y-1, x, "Next: ");
+	attron(COLOR_PAIR(BOARD_COLOR));
+	draw_hor(x - 1, y-2, 8, "_", 1);
+	draw_hor(x - 1, y+2, 8, "_", 1);
+	mvprintw(y-3, x, "Next: ");
+	attroff(COLOR_PAIR(BOARD_COLOR));
 	draw_tetro(next_tetro, next);
 	return;
 }
@@ -230,25 +206,25 @@ void clear_row()
 	bool need_updation = false;
 	for (int i = HEIGHT - 1; i > 0; i--) {
 		if (!is_row_full(i)) {
-/* Store row numbers which are not full */
+        /* Store row numbers which are not full */
 			non_fullrow[i] = i;
 			continue;
 		}
-/* for every full row increment cleared_lines */
+        /* for every full row increment cleared_lines */
 		cleared_lines++; 
 		need_updation = true;
 	}
 	if (!need_updation)
 		return;
 	int y = HEIGHT - 1;
-	int s_y = HEIGHT - 1;
-	while (y > 0) {
+	int tmp_y = HEIGHT - 1;
+	while (y >= 0) {
 
 		/* make sure the row numbers stored in non_full rows arent out if bounds */
 		if (non_fullrow[y] > 0 && non_fullrow[y] < 20) {
 		/* copy all non full rows to tmp board */
-		memcpy(tmp_board[s_y], game_board[y], sizeof(table) * WIDTH);
-		s_y--;
+		memcpy(tmp_board[tmp_y], game_board[y], sizeof(table) * WIDTH);
+		tmp_y--;
 	}
 		y--;
 	}
@@ -256,7 +232,7 @@ void clear_row()
 
 	memcpy(game_board, tmp_board, sizeof(game_board));
 
-	/* update total cleared lines. */
+	    /* update total cleared lines. */
 	total_cleared_lines += cleared_lines;
 	return;
 }

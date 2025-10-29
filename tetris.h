@@ -33,8 +33,6 @@ extern int rot;
 extern int next, curr_piece;
 extern int cleared_lines, total_cleared_lines;
 
-void place_in_mid(tetro *tet);
-
 void generate_tetromino(tetro *tet);
 
 int rotate_tetromino(tetro *tet, int rotation);

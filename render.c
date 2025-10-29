@@ -77,3 +77,28 @@ void clean_tetromino(tetro tet, char *str)
 	return;
 }
 
+/* converts X coordinates from X*2 to X/2 */
+void screen_to_logic(tetro *tet)
+{
+        for (int i = 0; i < 4; i++)
+                tet->x[i] = (tet->x[i] - left_x) / 2;
+        return;
+}
+
+/* Converts actual X to X * 2 */
+void logic_to_screen(tetro *tet) {
+    for (int i = 0; i < 4; i++) {
+        tet->x[i] += left_x + 1;
+    }
+}
+
+/* Places the spawned piece in the middle */
+void place_in_mid(tetro *tet) {
+    for (int i = 0; i < 4; i++) {
+        tet->x[i] += BOARD_WIDTH / 2 - 4;
+
+        /* the y is being offset by 1 so that when a tetromino spawns,
+           it appears to be coming from above the ceiling */
+        tet->y[i] -= 1;
+    }
+}

@@ -14,9 +14,15 @@ int main(int argc, char **argv) {
         srand(time(NULL));
         tetro tetromino;
         generate_tetromino(&tetromino);
-        int score, level;
+        int score, level, highest_score;
         score = level = 0;
         while (game_status) {
+			print_scores_lvl(score, level);
+			draw_board();
+            print_stored_tetromino();
+            draw_tetro(tetromino, curr_piece);
+            print_next_tetromino();
+			refresh();
 			input(&tetromino);
             if (!tetromino_fall(&tetromino)) {
 				if (is_game_over(&tetromino))
@@ -29,12 +35,16 @@ int main(int argc, char **argv) {
 				refresh();
                 generate_tetromino(&tetromino); 
                 }
-            draw_board();       
-            print_stored_tetromino();
-            draw_tetro(tetromino, curr_piece);
-            print_next_tetromino();
         }
-
+		clear();
+		nodelay(stdscr, FALSE);
+		load_score(&highest_score);
+		if (score > highest_score) {
+			printw("Congratulations! you have beaten the highest score: %d", highest_score);
+			store_score(highest_score);
+		} else
+		    printw("Highest Score: %d", highest_score);
+		getch();
         endwin();
         return 0;
 }
