@@ -111,7 +111,8 @@ void store_tetromino(tetro tet)
 	screen_to_logic(&tet);
 	for (int i = 0; i < 4; i++) { 
 		game_board[tet.y[i]][tet.x[i]].block = true;
-		game_board[tet.y[i]][tet.x[i]].color = curr_piece;
+		game_board[tet.y[i]][tet.x[i]].color = curr_piece + 1;
+		/* +1 since enum of pieces starts from 0 and for colorpair it starts from 1 */
 	}
 	return;
 }
@@ -200,6 +201,7 @@ void print_next_tetromino()
 		next_tetro.x[i] += x;
 		next_tetro.y[i] += y;
 	}
+	mvprintw(y-1, x, "Next: ");
 	draw_tetro(next_tetro, next);
 	return;
 }

@@ -12,13 +12,13 @@ int main(int argc, char **argv) {
         init_curses();
         init_BoardInfo();
         srand(time(NULL));
-        tetro tetromino, tmp;
+        tetro tetromino;
         generate_tetromino(&tetromino);
         int score, level;
         score = level = 0;
         while (game_status) {
-			    input(&tetromino);
-                if (!tetromino_fall(&tetromino)) {
+			input(&tetromino);
+            if (!tetromino_fall(&tetromino)) {
 				if (is_game_over(&tetromino))
 					game_status = false;
                 store_tetromino(tetromino);
@@ -29,11 +29,10 @@ int main(int argc, char **argv) {
 				refresh();
                 generate_tetromino(&tetromino); 
                 }
-                draw_board();       
-                print_stored_tetromino();
-                draw_tetro(tetromino, curr_piece);
-                print_next_tetromino();
-                //refresh();
+            draw_board();       
+            print_stored_tetromino();
+            draw_tetro(tetromino, curr_piece);
+            print_next_tetromino();
         }
 
         endwin();

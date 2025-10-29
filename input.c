@@ -29,10 +29,12 @@ bool parse_input(tetro *tet)
 		case KEY_UP:
 			rot = (rot + 1) % 4;
 			rotate_tetromino(&tmp, rot);
-			if (!is_colliding(tmp))
-				if (!is_overlapping(&tmp))
+			if (!is_colliding(tmp)) {
+				if (!is_overlapping(&tmp)) {
 				   *tet = tmp;
+				}
 				overlap = true;
+			}
 			break;
 		case KEY_DOWN:
 			move_down(&tmp);

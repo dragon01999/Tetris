@@ -7,8 +7,6 @@
 #define BOARD_WIDTH 20
 #define BOARD_HEIGHT 20
 
-#define COLOR_ORANGE 208
-#define BOARD_COLOR 4
 #define I_PIECE 0
 #define O_PIECE 1
 #define J_PIECE 2
@@ -16,7 +14,7 @@
 #define S_PIECE 4
 #define Z_PIECE 5
 #define T_PIECE 6
-
+#define BOARD_COLOR 8
 
 extern int MAX_X, MAX_Y;
 

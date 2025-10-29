@@ -15,13 +15,14 @@ void init_curses()
 	if (has_colors()) {
 		start_color();
 		use_default_colors();
-		init_pair(I_PIECE, COLOR_CYAN, -1);
-		init_pair(O_PIECE, COLOR_YELLOW, -1);
-		init_pair(J_PIECE, COLOR_BLUE, -1);
-		init_pair(L_PIECE, COLOR_ORANGE, -1);
-		init_pair(S_PIECE, COLOR_GREEN, -1);
-		init_pair(Z_PIECE, COLOR_RED, -1);
-		init_pair(T_PIECE, COLOR_MAGENTA, -1);
+		init_pair(I + 1, 51, -1);
+		init_pair(O + 1, 220, -1);
+		init_pair(J + 1, 21, -1);
+		init_pair(L + 1, 214, -1);
+		init_pair(S + 1, 46, -1);
+		init_pair(Z + 1, 196, -1);
+		init_pair(T + 1, 201, -1);
+		init_pair(BOARD_COLOR, COLOR_GREEN, -1);
 	}
 }
 void init_BoardInfo()
@@ -52,18 +53,18 @@ void draw_board()
 		draw_hor(left_x, i, BOARD_WIDTH + 1, "`", 1);
 	draw_hor(left_x, BOARD_HEIGHT, BOARD_WIDTH + 1, "=", 1);
 	draw_hor(left_x, BOARD_HEIGHT + 1, BOARD_WIDTH, "\\/", 2);
-	draw_ver(left_x - 1, 0, BOARD_HEIGHT + 1, ">!");
-	draw_ver(left_x + BOARD_WIDTH + 1, 0, BOARD_HEIGHT + 1, "!<");
+	draw_ver(left_x - 1, 0, BOARD_HEIGHT + 1, "<!");
+	draw_ver(left_x + BOARD_WIDTH + 1, 0, BOARD_HEIGHT + 1, "!>");
 	attroff(COLOR_PAIR(BOARD_COLOR));
 }
 
 void draw_tetro(tetro tet, int piece)
 {
-	attron(COLOR_PAIR(piece));
+	attron(COLOR_PAIR(piece + 1));
 	for (int i = 0; i < 4; i++) {
 		mvprintw(tet.y[i], tet.x[i], "[]");
 	}
-	attroff(COLOR_PAIR(piece));
+	attroff(COLOR_PAIR(piece + 1));
 	return;
 }
 
