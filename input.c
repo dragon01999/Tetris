@@ -11,56 +11,57 @@ float delay = 400;
 bool parse_input(tetro *tet)
 {
 	tetro tmp = *tet;
-	int ch;
-	bool overlap = false;
-	ch = getch();
-	switch(ch) {
-		case KEY_RIGHT:
-			move_direction(&tmp,2);
-			if (!is_colliding(tmp) && !is_overlapping(&tmp))
-				*tet = tmp;
-			break;
-		case KEY_LEFT:
-			move_direction(&tmp, -2);
-			if (!is_colliding(tmp) && !is_overlapping(&tmp))
-				*tet = tmp;
-			break;
-		case KEY_UP:
-			if (curr_piece == O) {
+	int ch = getch();
+	if (ch != ERR)
+		switch(ch) {
+			case KEY_RIGHT:
+				move_direction(&tmp,2);
+				if (!is_colliding(tmp) && !is_overlapping(&tmp))
+					*tet = tmp;
 				break;
+			case KEY_LEFT:
+				move_direction(&tmp, -2);
+				if (!is_colliding(tmp) && !is_overlapping(&tmp))
+					*tet = tmp;
+				break;
+			case KEY_UP:
+				if (tetris.curr_piece == O) {
+					break;
 			}
-			rot = (rot + 1) % 4;
-			rotate_tetromino(&tmp, rot);
-			if (!is_colliding(tmp)) {
-				if (!is_overlapping(&tmp)) {
-				   *tet = tmp;
+				tetris.rotation = (tetris.rotation + 1) % 4;
+				rotate_tetromino(&tmp);
+				if (!is_colliding(tmp)) {
+					if (!is_overlapping(&tmp)) {
+						*tet = tmp;
 				}
-				overlap = true;
+					return false;
 			}
-			break;
-		case KEY_DOWN:
-			move_down(&tmp);
-			if (!is_colliding(tmp) && !is_overlapping(&tmp))
-				*tet = tmp;
-			else if (is_overlapping(&tmp))
-				overlap = true;
-			break;
-		case 'p':
-			// disable nodelay so getch() waits
-			nodelay(stdscr, FALSE);
-
-			do {
-    // maybe print "Press P to continue..."
+				break;
+			case KEY_DOWN:
+				move_down(&tmp);
+				if (!is_colliding(tmp) && !is_overlapping(&tmp))
+					*tet = tmp;
+				else if (is_overlapping(&tmp))
+					return false;
+				break;
+			case 'p':
+			/* disable nodelay so getch() waits */
+				nodelay(stdscr, FALSE);
+				do {
+					/*
+					 *
+					 */
 				} while (getch() != 'p');
-			nodelay(stdscr, TRUE);
-			break;
-		case 'q':
-			exit(1);
+				nodelay(stdscr, TRUE);
+				break;
+			case 'q':
+				tetris.game_status = false;
+				return false;
 
 		default:
 			break;
 	}
-	return overlap;
+	return true;
 }
 
 bool input(tetro *tetromino)
@@ -73,12 +74,14 @@ curr_ms = start.tv_sec * 1000 + (start.tv_nsec / 1000000);
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		curr_ms =  start.tv_sec * 1000 + (start.tv_nsec / 1000000);
         tmp = *tetromino;
-	    parse_input(tetromino);
+	    if (!parse_input(tetromino)) {
+			return true;
+		}
 		clean_tetromino(tmp, "``");
 		flushinp();
-	    draw_tetro(*tetromino, curr_piece);
+	    draw_tetro(*tetromino, tetris.curr_piece);
 		refresh();
-		napms(1);
+		napms(5);
 	}
 	return false;
 }

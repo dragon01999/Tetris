@@ -18,6 +18,16 @@ typedef struct table {
 	uint8_t color;
 } table;
 
+struct GameState {
+	int curr_piece;
+	int next;
+	tetro next_tetromino;
+	int rotation;
+	int cleared_lines;
+	int total_cleared;
+	bool game_status;
+};
+
 /* tetromino shapes */
 typedef enum {
 	I = 0,
@@ -29,13 +39,13 @@ typedef enum {
 	T = 6,
 } shape;
 
-extern int rot;
-extern int next, curr_piece;
-extern int cleared_lines, total_cleared_lines;
+extern table game_board[HEIGHT][WIDTH];
+extern const tetro tetromino[7][4];
+extern struct GameState tetris;
 
 void generate_tetromino(tetro *tet);
 
-int rotate_tetromino(tetro *tet, int rotation);
+int rotate_tetromino(tetro *tet);
 
 void store_tetromino(tetro tet);
 
@@ -48,11 +58,6 @@ bool is_colliding(tetro tet);
 bool is_overlapping(tetro *tet);
 
 bool is_game_over(tetro *tet);
-
-void print_stored_tetromino();
-
-void print_next_tetromino();
-                                                      void clean_next();
 
 bool tetromino_fall(tetro *tet);
 

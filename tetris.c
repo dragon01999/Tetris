@@ -8,12 +8,13 @@
 /* game board to track stored tetrominos */
 table game_board[HEIGHT][WIDTH];
 table tmp_board[HEIGHT][WIDTH];
-int next = -1, curr_piece, rot;
-int cleared_lines, total_cleared_lines;
-tetro next_tetro;
+struct GameState tetris = {
+	.next = -1,
+};
+
 
 /* X coordinates are stored as X*2 since each tetromino block is printed as [] */
-static tetro tetromino[7][4] = {
+const tetro tetromino[7][4] = {
 	[I] = {
 		//0
 		{ .x = {0,2,4,6}, .y = {1,1,1,1} },
@@ -40,37 +41,36 @@ static tetro tetromino[7][4] = {
 /* spawns new piece */
 void generate_tetromino(tetro *tet)
 {
-	init_BoardInfo();
-	if (next == -1) {
-		curr_piece = (rand() % 7);
-		next = (rand() % 7);
-	}
-	curr_piece = next;
-	next = (rand() % 7);
-	*tet = tetromino[curr_piece][0];
-	rot = 0;
+	if (tetris.next == -1) {
+		tetris.curr_piece = (rand() % 7);
+		tetris.next = (rand() % 7);
+	} 
+	tetris.curr_piece = tetris.next;
+	tetris.next = (rand() % 7);
+	*tet = tetromino[tetris.curr_piece][0];
+	tetris.rotation = 0;
 	logic_to_screen(tet);
     place_in_mid(tet);
 	return;
 }
 
 /* rotates pieces */
-int rotate_tetromino(tetro *tet, int rotation)
+int rotate_tetromino(tetro *tet)
 {
 	int curr_x, curr_y, mid_x, mid_y;
 	/* store next rotation pivot; 1 is taken as mid */
-	mid_x = tetromino[curr_piece][rot].x[1];
-	mid_y = tetromino[curr_piece][rot].y[1];
+	mid_x = tetromino[tetris.curr_piece][tetris.rotation].x[1];
+	mid_y = tetromino[tetris.curr_piece][tetris.rotation].y[1];
 	/* stores current piece pivots */
 	curr_x = tet->x[1];
 	curr_y = tet->y[1];
 	for (int i = 0; i < 4; i++) {
 
     /* calculate block i's X relative to its middle then offset it by current piece's mid X */
-		tet->x[i] = (tetromino[curr_piece][rot].x[i] - mid_x) + curr_x;
+		tet->x[i] = (tetromino[tetris.curr_piece][tetris.rotation].x[i] - mid_x) + curr_x;
 
 	/* calculate block i's Y relative to its middle then offset it by current piece's mid Y */
-		tet->y[i] = (tetromino[curr_piece][rot].y[i] - mid_y) + curr_y;
+		tet->y[i] = (tetromino[tetris.curr_piece][tetris.rotation].y[i] - mid_y) + curr_y;
 	}
 
 	return 0;
@@ -81,10 +81,13 @@ void store_tetromino(tetro tet)
 {
 	/* convert X*2 to X/2 before storing */
 	screen_to_logic(&tet);
-	for (int i = 0; i < 4; i++) { 
-		game_board[tet.y[i]][tet.x[i]].block = true;
-		game_board[tet.y[i]][tet.x[i]].color = curr_piece + 1;
-		/* +1 since enum of pieces starts from 0 and for colorpair it starts from 1 */
+	for (int i = 0; i < 4; i++) {
+	/* To prevent writing X in next rows memory address in case X logical coordinates exceeds 9 */
+		if (tet.x[i] >= 0 && tet.x[i] < WIDTH) {
+			game_board[tet.y[i]][tet.x[i]].block = true;
+	/* +1 since enum of pieces starts from 0 and for colorpair it starts from 1 */
+			game_board[tet.y[i]][tet.x[i]].color = tetris.curr_piece + 1;
+		}
 	}
 	return;
 }
@@ -109,7 +112,7 @@ void move_direction(tetro *tet, int dir)
 bool is_colliding(tetro tet)
 {
 	for (int i = 0; i < 4; i++) 
-		if (tet.x[i] > right_x || tet.x[i] < left_x + 1) 
+		if (tet.x[i] > screen.right_wall || tet.x[i] < screen.left_wall + 1) 
 			return true;
 	return false;
 }
@@ -147,47 +150,6 @@ bool tetromino_fall(tetro *tet)
 	return true;
 }
 
-/* print stored pieces or remnant blocks inside the game_board */
-void print_stored_tetromino()
-{
-	for (int y = 0; y < HEIGHT; y++) {
-		for (int x = 0; x < WIDTH; x++) {
-			if(game_board[y][x].block == true) {
-				attron(COLOR_PAIR(game_board[y][x].color));
-/* X*2 since each block is []. offset by left wall X+1 */
-				mvprintw(y, x * 2 + left_x + 1, "[]");                attroff(COLOR_PAIR(game_board[y][x].color));	
-
-			}
-		}
-	}
-	return;
-}
-
-/* This will print the next tetromino in left side of screen */
-void print_next_tetromino()
-{
-	next_tetro = tetromino[next][0];
-	int x = left_x / 2 - 4;
-	int y = BOARD_HEIGHT / 2;
-	for (int i = 0; i < 4; i++) {
-		next_tetro.x[i] += x;
-		next_tetro.y[i] += y;
-	}
-	attron(COLOR_PAIR(BOARD_COLOR));
-	draw_hor(x - 1, y-2, 8, "_", 1);
-	draw_hor(x - 1, y+2, 8, "_", 1);
-	mvprintw(y-3, x, "Next: ");
-	attroff(COLOR_PAIR(BOARD_COLOR));
-	draw_tetro(next_tetro, next);
-	return;
-}
-
-void clean_next()
-{
-	clean_tetromino(next_tetro, "  ");
-	return;
-}
-
 /* Check if the row or the line is full for a given Y */
 bool is_row_full(int row)
 {  
@@ -198,9 +160,9 @@ bool is_row_full(int row)
 }
 
 /* Deletes the full rows */
-void clear_row()
+void clear_row(void)
 {   
-	cleared_lines = 0;
+	tetris.cleared_lines = 0;
 	int non_fullrow[20];
 	memset(non_fullrow, 0, sizeof(non_fullrow));
 	bool need_updation = false;
@@ -211,7 +173,7 @@ void clear_row()
 			continue;
 		}
         /* for every full row increment cleared_lines */
-		cleared_lines++; 
+		tetris.cleared_lines++; 
 		need_updation = true;
 	}
 	if (!need_updation)
@@ -219,7 +181,6 @@ void clear_row()
 	int y = HEIGHT - 1;
 	int tmp_y = HEIGHT - 1;
 	while (y >= 0) {
-
 		/* make sure the row numbers stored in non_full rows arent out if bounds */
 		if (non_fullrow[y] > 0 && non_fullrow[y] < 20) {
 		/* copy all non full rows to tmp board */
@@ -229,12 +190,9 @@ void clear_row()
 		y--;
 	}
 	    /* write back the nonfull rows from tmp board to game_board */
-
 	memcpy(game_board, tmp_board, sizeof(game_board));
-
 	    /* update total cleared lines. */
-	total_cleared_lines += cleared_lines;
+	tetris.total_cleared += tetris.cleared_lines;
 	return;
 }
 
-		

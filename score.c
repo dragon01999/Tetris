@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <ncurses.h>
+#include <errno.h>
 #include "tetris.h"
+#include "render.h"
 #include "score.h"
 
 void update_scores(int *score, int *lvl)
 {
-    if (total_cleared_lines / 10 > *lvl)
+    if (tetris.total_cleared / 10 > *lvl)
 		*lvl += 1;
-	switch(cleared_lines) {
+	switch(tetris.cleared_lines) {
 		case SINGLE:
 		    *score += 40 * (*lvl + 1);
 			break;
@@ -28,14 +30,18 @@ void update_scores(int *score, int *lvl)
 
 void print_scores_lvl(int score, int lvl)
 {
-	mvprintw(0, 0, "score:%d level:%d  ", score, lvl);
+	attron(COLOR_PAIR(BOARD_COLOR));
+	mvprintw(0, 0, "Score:%d ", score);
+	mvprintw(2, 0, "Level:%d ", lvl);
+	attroff(COLOR_PAIR(BOARD_COLOR));
 }
 
 void load_score(int *highest_score)
 {
-	FILE *in_file = fopen("scores.csv", "r");
+	FILE *in_file = fopen("Tetris.score", "r");
 	if (!in_file) {
-		fprintf(stderr,"File could'nt open\n");
+		if (errno != ENOENT)
+			fprintf(stderr,"File could'nt open. Error:%s\n", strerror(errno));
 		return;
 	}
 	if (fscanf(in_file, "%d", highest_score) == 1) {
@@ -48,9 +54,10 @@ void load_score(int *highest_score)
 
 void store_score(int highest_score)
 {
-	FILE *in_file = fopen("scores.csv", "w");
+	FILE *in_file = fopen("Tetris.score", "w");
     if (!in_file) {
-        fprintf(stderr,"File could'nt open\n");
+		if (errno != ENOENT) 
+			fprintf(stderr,"File could'nt open. Error:%s\n", strerror(errno));
         return;
     }
 	fprintf(in_file,"%d",highest_score);

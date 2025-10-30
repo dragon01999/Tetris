@@ -6,7 +6,6 @@
 #include "input.h"
 #include "score.h"
 
-bool game_status = true;
 int main(int argc, char **argv) {
 
         init_curses();
@@ -14,19 +13,23 @@ int main(int argc, char **argv) {
         srand(time(NULL));
         tetro tetromino;
         generate_tetromino(&tetromino);
-        int score, level, highest_score = 0;
-        score = level = 0;
-        while (game_status) {
+        int score, level, highest_score;
+        score = highest_score = 0;
+		level = 1;
+		tetris.game_status = true;
+		print_keys();
+        while (tetris.game_status) {
 			print_scores_lvl(score, level);
+			draw_logo();
 			draw_board();
             print_stored_tetromino();
-            draw_tetro(tetromino, curr_piece);
+            draw_tetro(tetromino, tetris.curr_piece);
             print_next_tetromino();
 			refresh();
 			input(&tetromino);
             if (!tetromino_fall(&tetromino)) {
 				if (is_game_over(&tetromino))
-					game_status = false;
+					tetris.game_status = false;
                 store_tetromino(tetromino);
                 clear_row();
                 update_scores(&score, &level);

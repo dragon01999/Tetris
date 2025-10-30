@@ -7,33 +7,36 @@
 #define BOARD_WIDTH 20
 #define BOARD_HEIGHT 20
 
-#define I_PIECE 0
-#define O_PIECE 1
-#define J_PIECE 2
-#define L_PIECE 3
-#define S_PIECE 4
-#define Z_PIECE 5
-#define T_PIECE 6
 #define BOARD_COLOR 8
 
-extern int MAX_X, MAX_Y;
+struct ScreenInfo {
+	int max_y;
+	int max_x;
+	int left_wall;
+	int right_wall;
+};
 
-extern int left_x; //left side wall
-extern int right_x; //right side wall 
+extern struct ScreenInfo screen;
 
-void init_curses();
+void init_curses(void);
 
-void init_BoardInfo();
+void init_BoardInfo(void);
 
-void draw_hor(int x, int y, int times, char *obj, int obj_len);
+void draw_logo(void);
 
-void draw_ver(int x, int y, int times, char *obj);
+void print_keys(void);
 
-void draw_board();
+void draw_board(void);
 
 void draw_tetro(tetro tet, int piece);
 
 void clean_tetromino(tetro tet, char *str);
+
+void print_stored_tetromino(void);
+
+void print_next_tetromino(void);
+
+void clean_next(void);
 
 void screen_to_logic(tetro *tet);
 

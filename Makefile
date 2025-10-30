@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -O2 -g
 LDFLAGS = -lncurses
 
 OBJ = tetris.o render.o input.o score.o main.o
