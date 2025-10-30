@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
         srand(time(NULL));
         tetro tetromino;
         generate_tetromino(&tetromino);
-        int score, level, highest_score;
+        int score, level, highest_score = 0;
         score = level = 0;
         while (game_status) {
 			print_scores_lvl(score, level);
@@ -40,8 +40,8 @@ int main(int argc, char **argv) {
 		nodelay(stdscr, FALSE);
 		load_score(&highest_score);
 		if (score > highest_score) {
-			printw("Congratulations! you have beaten the highest score: %d", highest_score);
-			store_score(highest_score);
+			printw("Congratulations! you have beaten the highest score: %d. Current highest:%d", highest_score, score);
+			store_score(score);
 		} else
 		    printw("Highest Score: %d", highest_score);
 		getch();

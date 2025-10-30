@@ -26,6 +26,9 @@ bool parse_input(tetro *tet)
 				*tet = tmp;
 			break;
 		case KEY_UP:
+			if (curr_piece == O) {
+				break;
+			}
 			rot = (rot + 1) % 4;
 			rotate_tetromino(&tmp, rot);
 			if (!is_colliding(tmp)) {
@@ -75,7 +78,7 @@ curr_ms = start.tv_sec * 1000 + (start.tv_nsec / 1000000);
 		flushinp();
 	    draw_tetro(*tetromino, curr_piece);
 		refresh();
-		napms(10);
+		napms(1);
 	}
 	return false;
 }

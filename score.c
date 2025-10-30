@@ -33,7 +33,7 @@ void print_scores_lvl(int score, int lvl)
 
 void load_score(int *highest_score)
 {
-	FILE *in_file = fopen("scores.csv", "w");
+	FILE *in_file = fopen("scores.csv", "r");
 	if (!in_file) {
 		fprintf(stderr,"File could'nt open\n");
 		return;
