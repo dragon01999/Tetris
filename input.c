@@ -78,13 +78,13 @@ bool input(tetro *tetromino)
     	while (curr_ms <= end_ms) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		curr_ms =  start.tv_sec * 1000 + (start.tv_nsec / 1000000);
-        	tmp = *tetromino;
-	    	if (!parse_input(tetromino)) {
+        tmp = *tetromino;
+	    if (!parse_input(tetromino)) {
 			return true;
 		}
 		clean_tetromino(tmp, "``");
 		flushinp();
-	    	draw_tetro(*tetromino, tetris.curr_piece);
+	    draw_tetro(*tetromino, tetris.curr_piece);
 		refresh();
 		napms(5);
 	}
