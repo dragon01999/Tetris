@@ -29,13 +29,13 @@ void init_curses(void)
 		init_pair(BOARD_COLOR, COLOR_GREEN, -1);
 	}
 }
-void init_BoardInfo(void)
+void init_ScreenInfo(void)
 {
 	getmaxyx(stdscr, MAX_Y, MAX_X);
 	screen.left_wall = (MAX_X - BOARD_WIDTH) / 2;
 	screen.right_wall = screen.left_wall + BOARD_WIDTH;
 	/* offsetting by 1 so it will be at exact center */
-    screen.left_wall -= 1;
+        screen.left_wall -= 1;
 	screen.right_wall -= 1;
 
 }
@@ -44,6 +44,7 @@ static void draw_hor(int x, int y, int times, char *obj, int obj_len)
 {
 	for (int i = 0; i < times; i += obj_len) 
 		mvprintw(y, x + i, "%s", obj);
+	return;
 	
 }
 
@@ -51,6 +52,7 @@ static void draw_ver(int x, int y, int times, char *obj)
 {
 	for (int i = 0; i < times; i++)
 		mvprintw(y + i, x, "%s", obj);
+	return;
 }
 
 void draw_logo(void)
@@ -60,9 +62,9 @@ void draw_logo(void)
 	attron(COLOR_PAIR(BOARD_COLOR));
 	mvprintw(y, x - 7, "[]");
 	mvprintw(y + 1, x - 7, "TETRIS");
-    mvprintw(y + 2, x - 3, "[]");
+        mvprintw(y + 2, x - 3, "[]");
 	attroff(COLOR_PAIR(BOARD_COLOR));
-    return;
+        return;
 }
 
 void print_keys(void)
@@ -70,20 +72,22 @@ void print_keys(void)
 	attron(COLOR_PAIR(BOARD_COLOR));
 	mvprintw(0, screen.right_wall + 4,"Pause: p");
 	mvprintw(2, screen.right_wall + 4,"Quit: q");
-    attroff(COLOR_PAIR(BOARD_COLOR));
-    return;
+        attroff(COLOR_PAIR(BOARD_COLOR));
+        return;
 }
 
 void draw_board(void)
 {
 	attron(COLOR_PAIR(BOARD_COLOR));
-	for (int i = 0; i < BOARD_HEIGHT; i++)
+	for (int i = 0; i < BOARD_HEIGHT; i++) {
 		draw_hor(screen.left_wall, i, BOARD_WIDTH + 1, "`", 1);
+	}
 	draw_hor(screen.left_wall, BOARD_HEIGHT, BOARD_WIDTH + 1, "=", 1);
 	draw_hor(screen.left_wall, BOARD_HEIGHT + 1, BOARD_WIDTH, "\\/", 2);
 	draw_ver(screen.left_wall - 1, 0, BOARD_HEIGHT + 1, "<!");
 	draw_ver(screen.left_wall + BOARD_WIDTH + 1, 0, BOARD_HEIGHT + 1, "!>");
 	attroff(COLOR_PAIR(BOARD_COLOR));
+	return;
 }
 
 void draw_tetro(tetro tet, int piece)
@@ -99,8 +103,9 @@ void draw_tetro(tetro tet, int piece)
 void clean_tetromino(tetro tet, char *str)
 {
 	attron(COLOR_PAIR(BOARD_COLOR));
-	for (int i = 0; i < 4; i++) 
+	for (int i = 0; i < 4; i++) {
 		mvprintw(tet.y[i], tet.x[i], "%s",str);	
+	}
 	attroff(COLOR_PAIR(BOARD_COLOR));
 	return;
 }
@@ -122,12 +127,14 @@ void print_next_tetromino(void)
     mvprintw(y - 3, x, "Next:");
     attroff(COLOR_PAIR(BOARD_COLOR));
     draw_tetro(tetris.next_tetromino, tetris.next);
+    return;
 }
 
 /* Cleans the previous preview of next tetromino */
 void clean_next(void)
 {
     clean_tetromino(tetris.next_tetromino, "  ");
+    return;
 }
 
 /* Prints all stored pieces (remnant blocks) inside the game_board */
@@ -137,10 +144,8 @@ void print_stored_tetromino(void)
         for (int x = 0; x < WIDTH; x++) {
             if (game_board[y][x].block == true) {
                 attron(COLOR_PAIR(game_board[y][x].color));
-
                 /* x * 2 since each block is "[]", offset by left wall */
                 mvprintw(y, x * 2 + screen.left_wall + 1, "[]");
-
                 attroff(COLOR_PAIR(game_board[y][x].color));
             }
         }
@@ -152,8 +157,9 @@ void print_stored_tetromino(void)
 /* converts X coordinates from X*2 to X/2 */
 void screen_to_logic(tetro *tet)
 {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++) {
                 tet->x[i] = (tet->x[i] - screen.left_wall) / 2;
+	}
         return;
 }
 
@@ -162,14 +168,19 @@ void logic_to_screen(tetro *tet) {
     for (int i = 0; i < 4; i++) {
         tet->x[i] += screen.left_wall + 1;
     }
+    return;
 }
 
 /* Places the spawned piece in the middle */
 void place_in_mid(tetro *tet) {
+    int offset = 4;
+    if (tetris.curr_piece == O)
+	    offset = 2;
     for (int i = 0; i < 4; i++) {
-        tet->x[i] += BOARD_WIDTH / 2 - 2;
+        tet->x[i] += BOARD_WIDTH / 2 - offset;
         /* the y is being offset by 1 so that when a tetromino spawns,
            it appears to be coming from above the ceiling */
         tet->y[i] -= 1;
     }
+    return;
 }

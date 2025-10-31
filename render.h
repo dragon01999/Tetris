@@ -20,7 +20,7 @@ extern struct ScreenInfo screen;
 
 void init_curses(void);
 
-void init_BoardInfo(void);
+void init_ScreenInfo(void);
 
 void draw_logo(void);
 

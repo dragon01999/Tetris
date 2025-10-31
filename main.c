@@ -9,34 +9,34 @@
 int main(int argc, char **argv) {
         
         init_curses();
-        init_BoardInfo();
+        init_ScreenInfo();
         srand(time(NULL));
         tetro tetromino;
         generate_tetromino(&tetromino);
         int score, level, highest_score;
         score = highest_score = 0;
-		level = 1;
-		tetris.game_status = true;
-		print_keys();
-		system("ffplay -nodisp -autoexit -loglevel quiet tetris-1.mp3 &");
+        level = 1;
+	tetris.game_status = true;
+	print_keys();
+	system("ffplay -nodisp -autoexit -loglevel quiet tetris-1.mp3 &");
         while (tetris.game_status) {
-			print_scores_lvl(score, level);
-			draw_logo();
-			draw_board();
-            print_stored_tetromino();
-            draw_tetro(tetromino, tetris.curr_piece);
-            print_next_tetromino();
-			refresh();
-			input(&tetromino);
-            if (!tetromino_fall(&tetromino)) {
-				if (is_game_over(&tetromino))
-					tetris.game_status = false;
+		print_scores_lvl(score, level);
+		draw_logo();
+		draw_board();
+                print_stored_tetromino();
+                draw_tetro(tetromino, tetris.curr_piece);
+                print_next_tetromino();
+		refresh();
+		input(&tetromino);
+                if (!tetromino_fall(&tetromino)) {
+			if (is_game_over(&tetromino))
+				tetris.game_status = false;
                 store_tetromino(tetromino);
                 clear_row();
                 update_scores(&score, &level);
                 print_scores_lvl(score, level);
                 clean_next();
-				refresh();
+		refresh();
                 generate_tetromino(&tetromino); 
                 }
         }

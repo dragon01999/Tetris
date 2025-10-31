@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ncurses.h>
 #include <errno.h>
+#include <string.h>
 #include "tetris.h"
 #include "render.h"
 #include "score.h"
@@ -34,6 +35,7 @@ void print_scores_lvl(int score, int lvl)
 	mvprintw(0, 0, "Score:%d ", score);
 	mvprintw(2, 0, "Level:%d ", lvl);
 	attroff(COLOR_PAIR(BOARD_COLOR));
+	return;
 }
 
 void load_score(int *highest_score)
@@ -45,7 +47,9 @@ void load_score(int *highest_score)
 		return;
 	}
 	if (fscanf(in_file, "%d", highest_score) == 1) {
-		//
+		/*
+		 *
+		 */
 	} else
 		fprintf(stderr, "Error when reading from file");
 	fclose(in_file);
@@ -55,11 +59,12 @@ void load_score(int *highest_score)
 void store_score(int highest_score)
 {
 	FILE *in_file = fopen("Tetris.score", "w");
-    if (!in_file) {
+        if (!in_file) {
 		if (errno != ENOENT) 
 			fprintf(stderr,"File could'nt open. Error:%s\n", strerror(errno));
         return;
-    }
+        }
 	fprintf(in_file,"%d",highest_score);
 	fclose(in_file);
+	return;
 }

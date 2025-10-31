@@ -27,15 +27,15 @@ bool parse_input(tetro *tet)
 			case KEY_UP:
 				if (tetris.curr_piece == O) {
 					break;
-			}
+				}
 				tetris.rotation = (tetris.rotation + 1) % 4;
 				rotate_tetromino(&tmp);
 				if (!is_colliding(tmp)) {
 					if (!is_overlapping(&tmp)) {
 						*tet = tmp;
-				}
+					}
 					return false;
-			}
+				}
 				break;
 			case KEY_DOWN:
 				move_down(&tmp);
@@ -49,7 +49,7 @@ bool parse_input(tetro *tet)
 				nodelay(stdscr, FALSE);
 				do {
 					/*
-					 *
+					 * Just loop until p is pressed
 					 */
 				} while (getch() != 'p');
 				nodelay(stdscr, TRUE);
@@ -58,8 +58,8 @@ bool parse_input(tetro *tet)
 				tetris.game_status = false;
 				return false;
 
-		default:
-			break;
+			default:
+				break;
 	}
 	return true;
 }
@@ -69,17 +69,17 @@ bool input(tetro *tetromino)
 	tetro tmp;
 	clock_gettime(CLOCK_MONOTONIC, &start);
 	end_ms = (start.tv_sec * 1000) + delay  + (start.tv_nsec/1000000);
-curr_ms = start.tv_sec * 1000 + (start.tv_nsec / 1000000);
-    while (curr_ms <= end_ms) {
+	curr_ms = start.tv_sec * 1000 + (start.tv_nsec / 1000000);
+    	while (curr_ms <= end_ms) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		curr_ms =  start.tv_sec * 1000 + (start.tv_nsec / 1000000);
-        tmp = *tetromino;
-	    if (!parse_input(tetromino)) {
+        	tmp = *tetromino;
+	    	if (!parse_input(tetromino)) {
 			return true;
 		}
 		clean_tetromino(tmp, "``");
 		flushinp();
-	    draw_tetro(*tetromino, tetris.curr_piece);
+	    	draw_tetro(*tetromino, tetris.curr_piece);
 		refresh();
 		napms(5);
 	}
