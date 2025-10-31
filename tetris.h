@@ -25,6 +25,8 @@ struct GameState {
 	int rotation;
 	int cleared_lines;
 	int total_cleared;
+	int score;
+	int level;
 	bool game_status;
 };
 
@@ -51,6 +53,8 @@ void store_tetromino(tetro tet);
 
 void move_down(tetro *tet);
 
+void hard_drop(tetro *tet);
+
 void move_direction(tetro *tet, int dir);
 
 bool is_colliding(tetro tet);
@@ -61,9 +65,9 @@ bool is_game_over(tetro *tet);
 
 bool tetromino_fall(tetro *tet);
 
-bool is_row_full(int row);
+bool is_lineFull(int line);
 
-void clear_row();
+void clear_lines();
 
 #endif
 		

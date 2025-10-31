@@ -35,7 +35,7 @@ void init_ScreenInfo(void)
 	screen.left_wall = (MAX_X - BOARD_WIDTH) / 2;
 	screen.right_wall = screen.left_wall + BOARD_WIDTH;
 	/* offsetting by 1 so it will be at exact center */
-        screen.left_wall -= 1;
+    screen.left_wall -= 1;
 	screen.right_wall -= 1;
 
 }
@@ -62,18 +62,19 @@ void draw_logo(void)
 	attron(COLOR_PAIR(BOARD_COLOR));
 	mvprintw(y, x - 7, "[]");
 	mvprintw(y + 1, x - 7, "TETRIS");
-        mvprintw(y + 2, x - 3, "[]");
+    mvprintw(y + 2, x - 3, "[]");
 	attroff(COLOR_PAIR(BOARD_COLOR));
-        return;
+    return;
 }
 
 void print_keys(void)
 {
 	attron(COLOR_PAIR(BOARD_COLOR));
-	mvprintw(0, screen.right_wall + 4,"Pause: p");
-	mvprintw(2, screen.right_wall + 4,"Quit: q");
-        attroff(COLOR_PAIR(BOARD_COLOR));
-        return;
+	mvprintw(0, screen.right_wall + 4,"Hard drop: Space");
+	mvprintw(2, screen.right_wall + 4, "Pause: p");
+	mvprintw(4, screen.right_wall + 4, "Quit: q");
+    attroff(COLOR_PAIR(BOARD_COLOR));
+    return;
 }
 
 void draw_board(void)
@@ -83,7 +84,7 @@ void draw_board(void)
 		draw_hor(screen.left_wall, i, BOARD_WIDTH + 1, "`", 1);
 	}
 	draw_hor(screen.left_wall, BOARD_HEIGHT, BOARD_WIDTH + 1, "=", 1);
-	draw_hor(screen.left_wall, BOARD_HEIGHT + 1, BOARD_WIDTH, "\\/", 2);
+	draw_hor(screen.left_wall + 1, BOARD_HEIGHT + 1, BOARD_WIDTH, "\\/", 2);
 	draw_ver(screen.left_wall - 1, 0, BOARD_HEIGHT + 1, "<!");
 	draw_ver(screen.left_wall + BOARD_WIDTH + 1, 0, BOARD_HEIGHT + 1, "!>");
 	attroff(COLOR_PAIR(BOARD_COLOR));

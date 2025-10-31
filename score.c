@@ -6,22 +6,22 @@
 #include "render.h"
 #include "score.h"
 
-void update_scores(int *score, int *lvl)
+void update_scores(void)
 {
-    if (tetris.total_cleared / 10 >= *lvl)
-		*lvl += 1;
+    if (tetris.total_cleared / 10 >= tetris.level)
+		tetris.level += 1;
 	switch(tetris.cleared_lines) {
 		case SINGLE:
-		    *score += 40 * (*lvl + 1);
+		    tetris.score += 40 * (tetris.level + 1);
 			break;
 		case DOUBLE:
-			*score += 100 * (*lvl + 1);
+			tetris.score += 100 * (tetris.level + 1);
 			break;
 		case TRIPLE:
-			*score += 300 * (*lvl + 1);
+			tetris.score += 300 * (tetris.level + 1);
 			break;
 		case TETRIS:
-			*score += 1200 * (*lvl + 1);
+			tetris.score += 1200 * (tetris.level + 1);
 			break;
 		default:
 			break;
@@ -29,11 +29,12 @@ void update_scores(int *score, int *lvl)
 	return;
 }
 
-void print_scores_lvl(int score, int lvl)
+void print_scores_lvl(void)
 {
 	attron(COLOR_PAIR(BOARD_COLOR));
-	mvprintw(0, 0, "Score:%d ", score);
-	mvprintw(2, 0, "Level:%d ", lvl);
+	mvprintw(0, 0, "Score:%d ", tetris.score);
+	mvprintw(2, 0, "Level:%d ", tetris.level);
+	mvprintw(4, 0, "Lines cleared:%d", tetris.total_cleared);
 	attroff(COLOR_PAIR(BOARD_COLOR));
 	return;
 }

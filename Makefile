@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -O2 -g -DWITH_SDL
-LDFLAGS = -lncurses
+LDFLAGS = -lSDL2 -lSDL2_mixer -lncurses
 
 OBJ = tetris.o render.o input.o score.o main.o
 

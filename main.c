@@ -6,50 +6,73 @@
 #include "input.h"
 #include "score.h"
 
+#if WITH_SDL
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#endif
 int main(int argc, char **argv) {
-        
-        init_curses();
-        init_ScreenInfo();
-        srand(time(NULL));
-        tetro tetromino;
-        generate_tetromino(&tetromino);
-        int score, level, highest_score;
-        score = highest_score = 0;
-        level = 1;
-	tetris.game_status = true;
+
+	#if WITH_SDL
+	if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+		fprintf(stderr, "SDL init failed. SDL Err:%s", SDL_GetError());
+		return 1;
+	}
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+		fprintf(stderr, "SDL Audio device open failed. SDL Err:%s", SDL_GetError());
+		return 1;
+	}
+	Mix_Music *bgm = Mix_LoadMUS("tetris-1.mp3");
+	if (!bgm) {
+		fprintf(stderr, "Failed to open music file. SDL Err:%s", SDL_GetError());
+		return 1;
+	}
+	Mix_PlayMusic(bgm, -1);
+    #endif
+    init_curses();
+    init_ScreenInfo();
+    srand(time(NULL));
+    tetro tetromino;
+    generate_tetromino(&tetromino);
+    int highest_score;
+    highest_score = 0;
 	print_keys();
-	system("ffplay -nodisp -autoexit -loglevel quiet tetris-1.mp3 &");
-        while (tetris.game_status) {
-		print_scores_lvl(score, level);
+    while (tetris.game_status) {
+		print_scores_lvl();
 		draw_logo();
 		draw_board();
-                print_stored_tetromino();
-                draw_tetro(tetromino, tetris.curr_piece);
-                print_next_tetromino();
+        print_stored_tetromino();
+        draw_tetro(tetromino, tetris.curr_piece);
+        print_next_tetromino();
 		refresh();
 		input(&tetromino);
-                if (!tetromino_fall(&tetromino)) {
+        if (!tetromino_fall(&tetromino)) {
 			if (is_game_over(&tetromino))
 				tetris.game_status = false;
-                store_tetromino(tetromino);
-                clear_row();
-                update_scores(&score, &level);
-                print_scores_lvl(score, level);
-                clean_next();
-		refresh();
-                generate_tetromino(&tetromino); 
-                }
+            store_tetromino(tetromino);
+            clear_lines();
+            update_scores();
+            print_scores_lvl();
+            clean_next();
+		    refresh();
+            generate_tetromino(&tetromino);
+			clean_tetromino(tetromino, "``");
         }
+    }
 		clear();
 		nodelay(stdscr, FALSE);
 		load_score(&highest_score);
-		if (score > highest_score) {
-			printw("Congratulations! you have beaten the highest score: %d. Current highest:%d", highest_score, score);
-			store_score(score);
+		if (tetris.score > highest_score) {
+			printw("Congratulations! you have beaten the highest score: %d. Current highest:%d", highest_score, tetris.score);
+			store_score(tetris.score);
 		} else
 		    printw("Highest Score: %d", highest_score);
-		getch();
-		endwin();
-		return 0;
+	getch();
+	endwin();
+	#if WITH_SDL
+	Mix_FreeMusic(bgm);
+	Mix_CloseAudio();
+	SDL_Quit();
+	#endif
+	return 0;
 }
 

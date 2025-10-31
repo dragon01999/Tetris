@@ -44,6 +44,11 @@ bool parse_input(tetro *tet)
 				else if (is_overlapping(&tmp))
 					return false;
 				break;
+			case ' ':
+				hard_drop(tet);
+				tetris.score += 10;
+				/* return false so that we spawn new piece */
+				return false;
 			case 'p':
 			/* disable nodelay so getch() waits */
 				nodelay(stdscr, FALSE);

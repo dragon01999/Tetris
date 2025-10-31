@@ -9,48 +9,51 @@
 table game_board[HEIGHT][WIDTH];
 table tmp_board[HEIGHT][WIDTH];
 struct GameState tetris = {
+	.game_status = true,
 	.next = -1,
+	.rotation = 0,
 	.total_cleared = 0,
+	.score = 0,
+	.level = 1,
 };
 
 
 /* X coordinates are stored as X*2 since each tetromino block is printed as [] */
 const tetro tetromino[7][4] = {
 	[I] = { 
-		   { .x = {0,2,4,6}, .y = {1,1,1,1} },
-		   { .x = {4,4,4,4}, .y = {0,1,2,3} },
-		   { .x = {0,2,4,6}, .y = {2,2,2,2} },
-	 	   { .x = {2,2,2,2}, .y = {0,1,2,3} }
+		    { .x = {0,2,4,6}, .y = {1,1,1,1} },
+		    { .x = {4,4,4,4}, .y = {0,1,2,3} },
+		    { .x = {0,2,4,6}, .y = {2,2,2,2} },
+	 	    { .x = {2,2,2,2}, .y = {0,1,2,3} }
 	},
 	[O] = {
 		    { .x = {0,2,0,2}, .y = {0,0,1,1} }
 	},
-	[J] = {     { .x = {0,0,2,4}, .y = {0,1,1,1} },  
-		    { .x = {0,2,2,2}, .y = {0,0,1,2} },                   
-		    { .x = {2,4,2,2}, .y = {0,0,1,2} },              
-	       	    { .x = {0,2,4,4}, .y = {1,1,1,2} }   
-	},                                                        
-	[L] = {     { .x = {0,0,2,4}, .y = {0,1,1,1} },                  
-	       	    { .x = {2,2,2,4}, .y = {0,1,2,2} },                   
-		    { .x = {0,2,4,0}, .y = {1,1,1,2} },                   
+	[J] = { 
+		    { .x = {0,0,2,4}, .y = {0,1,1,1} },  
+		    { .x = {0,2,2,2}, .y = {0,0,1,2} },     
+		    { .x = {2,4,2,2}, .y = {0,0,1,2} },              	  { .x = {0,2,4,4}, .y = {1,1,1,2} }   
+	},                                               
+	[L] = { 
+		    { .x = {0,0,2,4}, .y = {0,1,1,1} },     
+	       	{ .x = {2,2,2,4}, .y = {0,1,2,2} },                   { .x = {0,2,4,0}, .y = {1,1,1,2} }, 
 		    { .x = {0,2,2,2}, .y = {0,0,1,2} }      
-  	},                                                                                                          
-	[S] = {     { .x = {2,4,0,2}, .y = {0,0,1,1} },
+  	},                                                 	  [S] = { 
+		    { .x = {2,4,0,2}, .y = {0,0,1,1} },
 		    { .x = {0,0,2,2}, .y = {0,1,1,2} },
-	            { .x = {2,4,0,2}, .y = {1,1,2,2} },    
-     		    { .x = {2,2,4,4}, .y = {0,1,1,2} }       
+	        { .x = {2,4,0,2}, .y = {1,1,2,2} }, 
+     		{ .x = {2,2,4,4}, .y = {0,1,1,2} }       
    	},
-	[Z] = {                                                    
-	     	    { .x = {0,2,2,4}, .y = {0,0,1,1} },    
+	[Z] = {                                                       { .x = {0,2,2,4}, .y = {0,0,1,1} },    
  		    { .x = {2,0,2,0}, .y = {0,1,1,2} },
 		    { .x = {0,2,2,4}, .y = {1,1,2,2} },   
-    		    { .x = {2,0,2,0}, .y = {0,1,1,2} }
-        },
-	[T] = {     { .x = {2,0,2,4}, .y = {0,1,1,1} },        
-     		    { .x = {2,2,2,4}, .y = {0,1,2,1} },                   
-		    { .x = {0,2,4,2}, .y = {1,1,1,2} },                   
-		    { .x = {0,2,2,2}, .y = {1,0,1,2} }            
-	},                                           
+    		{ .x = {2,0,2,0}, .y = {0,1,1,2} }
+    },
+	[T] = {     
+		    { .x = {2,0,2,4}, .y = {0,1,1,1} },					  { .x = {2,2,2,4}, .y = {0,1,2,1} },   
+		    { .x = {0,2,4,2}, .y = {1,1,1,2} },     
+		    { .x = {0,2,2,2}, .y = {1,0,1,2} }      
+    },                                           
 };	
 
 /* spawns new piece */
@@ -65,29 +68,24 @@ void generate_tetromino(tetro *tet)
 	*tet = tetromino[tetris.curr_piece][0];
 	tetris.rotation = 0;
 	logic_to_screen(tet);
-        place_in_mid(tet);
+    place_in_mid(tet);
 	return;
 }
 
-/* rotates pieces */
+/* rotates tetromino using precomputed rotation states */
 int rotate_tetromino(tetro *tet)
 {
 	int curr_x, curr_y, mid_x, mid_y;
-	/* store next rotation pivot; 1 is taken as mid */
+	/* store next rotation pivot. 1 is taken as mid */
 	mid_x = tetromino[tetris.curr_piece][tetris.rotation].x[1];
 	mid_y = tetromino[tetris.curr_piece][tetris.rotation].y[1];
 	/* stores current piece pivots */
 	curr_x = tet->x[1];
 	curr_y = tet->y[1];
 	for (int i = 0; i < 4; i++) {
-
-        /* calculate block i's X relative to its middle then offset it by current piece's mid X */
 		tet->x[i] = (tetromino[tetris.curr_piece][tetris.rotation].x[i] - mid_x) + curr_x;
-
-	/* calculate block i's Y relative to its middle then offset it by current piece's mid Y */
 		tet->y[i] = (tetromino[tetris.curr_piece][tetris.rotation].y[i] - mid_y) + curr_y;
 	}
-
 	return 0;
 }
 
@@ -112,6 +110,17 @@ void move_down(tetro *tet)
 {
 	for (int i = 0; i < 4; i++)
 		tet->y[i]++;
+	return;
+}
+
+/* Hard drop */
+void hard_drop(tetro *tet)
+{
+	tetro tmp = *tet;
+	while (!is_colliding(tmp) && !is_overlapping(&tmp)) {
+		*tet = tmp;
+		move_down(&tmp);
+	}
 	return;
 }
 
@@ -166,23 +175,23 @@ bool tetromino_fall(tetro *tet)
 }
 
 /* Check if the row or the line is full for a given Y */
-bool is_row_full(int row)
+bool is_lineFull(int line)
 {  
 		for (int i = 0; i < WIDTH; i++)
-			if (game_board[row][i].block == false)
+			if (game_board[line][i].block == false)
 				return false;
 		return true;
 }
 
 /* Deletes the full rows */
-void clear_row(void)
+void clear_lines(void)
 {   
 	tetris.cleared_lines = 0;
 	int non_fullrow[20];
 	memset(non_fullrow, 0, sizeof(non_fullrow));
 	bool need_updation = false;
 	for (int i = HEIGHT - 1; i > 0; i--) {
-		if (!is_row_full(i)) {
+		if (!is_lineFull(i)) {
         /* Store row numbers which are not full */
 			non_fullrow[i] = i;
 			continue;
