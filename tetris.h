@@ -67,7 +67,7 @@ bool tetromino_fall(tetro *tet);
 
 bool is_lineFull(int line);
 
-void clear_lines();
+void clear_lines(void);
 
 #endif
 		
