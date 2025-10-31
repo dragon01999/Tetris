@@ -34,7 +34,7 @@ void init_BoardInfo(void)
 	getmaxyx(stdscr, MAX_Y, MAX_X);
 	screen.left_wall = (MAX_X - BOARD_WIDTH) / 2;
 	screen.right_wall = screen.left_wall + BOARD_WIDTH;
-	/* offsetting by 1 so it at exact center */
+	/* offsetting by 1 so it will be at exact center */
     screen.left_wall -= 1;
 	screen.right_wall -= 1;
 
@@ -167,7 +167,7 @@ void logic_to_screen(tetro *tet) {
 /* Places the spawned piece in the middle */
 void place_in_mid(tetro *tet) {
     for (int i = 0; i < 4; i++) {
-        tet->x[i] += BOARD_WIDTH / 2 - 4;
+        tet->x[i] += BOARD_WIDTH / 2 - 2;
         /* the y is being offset by 1 so that when a tetromino spawns,
            it appears to be coming from above the ceiling */
         tet->y[i] -= 1;

@@ -7,7 +7,7 @@
 
 void update_scores(int *score, int *lvl)
 {
-    if (tetris.total_cleared / 10 > *lvl)
+    if (tetris.total_cleared / 10 >= *lvl)
 		*lvl += 1;
 	switch(tetris.cleared_lines) {
 		case SINGLE:

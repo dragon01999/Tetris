@@ -6,7 +6,7 @@
 
 struct timespec start;
 long long end_ms, curr_ms;
-float delay = 400;
+float delay = 800;
 
 bool parse_input(tetro *tet)
 {

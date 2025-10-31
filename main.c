@@ -7,7 +7,7 @@
 #include "score.h"
 
 int main(int argc, char **argv) {
-
+        
         init_curses();
         init_BoardInfo();
         srand(time(NULL));
@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
 		level = 1;
 		tetris.game_status = true;
 		print_keys();
+		system("ffplay -nodisp -autoexit -loglevel quiet tetris-1.mp3 &");
         while (tetris.game_status) {
 			print_scores_lvl(score, level);
 			draw_logo();
@@ -48,6 +49,7 @@ int main(int argc, char **argv) {
 		} else
 		    printw("Highest Score: %d", highest_score);
 		getch();
-        endwin();
-        return 0;
+		endwin();
+		return 0;
 }
+

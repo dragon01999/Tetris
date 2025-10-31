@@ -10,6 +10,7 @@ table game_board[HEIGHT][WIDTH];
 table tmp_board[HEIGHT][WIDTH];
 struct GameState tetris = {
 	.next = -1,
+	.total_cleared = 0,
 };
 
 
