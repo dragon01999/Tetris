@@ -40,5 +40,5 @@ make
 https://pixabay.com/music/classical-string-quartet-tetris-theme-korobeiniki-rearranged-arr-for-strings-185592/
 ```
 
-Huge thanks to Gregory Quendel! I really love this Theme song.
+Huge thanks to Gregory Quendel! I really love this theme 
 
