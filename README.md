@@ -16,15 +16,19 @@ This game optionally supports music playback using SDL2 and SDL2_mixer. If these
 ### Ubuntu
 ```
 sudo apt install libsdl2-dev libsdl2-mixer-dev
-
+```
 ### Arch Linux
+```
 sudo pacman -S sdl2 sdl2_mixer
-
+```
 ### To compile:
+```
 make
+```
 
 ### run
+```
 ./game
-
+```
 
 
