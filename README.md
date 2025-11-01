@@ -31,10 +31,11 @@ make
 ./game
 ```
 ## Music
-**Background music:** Tetris Theme - Korobeiniki - Rearranged
-**Creator**: Gregor Quendel
+**Background music:** Tetris Theme - Korobeiniki - Rearranged   
 
-**Source:**
+**Creator**: Gregor Quendel  
+
+**Source:**  
 ```
 https://pixabay.com/music/classical-string-quartet-tetris-theme-korobeiniki-rearranged-arr-for-strings-185592/
 ```
