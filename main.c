@@ -35,7 +35,6 @@ int main(int argc, char **argv) {
     generate_tetromino(&tetromino);
     int highest_score;
     highest_score = 0;
-	print_keys();
     while (tetris.game_status) {
 		print_scores_lvl();
 		draw_logo();
@@ -51,11 +50,11 @@ int main(int argc, char **argv) {
             store_tetromino(tetromino);
             clear_lines();
             update_scores();
+			generate_tetromino(&tetromino);
             print_scores_lvl();
             clean_next();
-		    refresh();
-            generate_tetromino(&tetromino);
-			clean_tetromino(tetromino, "``");
+			clean_tetromino(tetromino, " `");
+			refresh();
         }
     }
 		clear();

@@ -82,11 +82,12 @@ bool input(tetro *tetromino)
 	    if (!parse_input(tetromino)) {
 			return true;
 		}
-		clean_tetromino(tmp, "``");
+		/* for clean we are using " `" cuz the position of left '[' will always be ' ' */
+		clean_tetromino(tmp, " `");
 		flushinp();
 	    draw_tetro(*tetromino, tetris.curr_piece);
 		refresh();
-		napms(5);
+		napms(2);
 	}
 	return false;
 }

@@ -24,8 +24,6 @@ void init_ScreenInfo(void);
 
 void draw_logo(void);
 
-void print_keys(void);
-
 void draw_board(void);
 
 void draw_tetro(tetro tet, int piece);

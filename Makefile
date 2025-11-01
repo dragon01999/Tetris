@@ -8,7 +8,7 @@ else
 	WITH_SDL = 1
 endif
 
-CFLAGS = -Wall -O2 -g -DWITH_SDL
+CFLAGS = -Wall -O2 -g
 LDFLAGS = -lncurses
 
 ifeq ($(WITH_SDL), 1)
@@ -23,6 +23,7 @@ all: game
 game: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o game $(LDFLAGS)
 	rm -f $(OBJ)
+	@clear
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
