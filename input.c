@@ -4,6 +4,11 @@
 #include "render.h"
 #include "tetris.h"
 
+#if WITH_SDL
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#endif
+
 struct timespec start;
 long long end_ms, curr_ms;
 float delay = 800;
@@ -52,11 +57,17 @@ bool parse_input(tetro *tet)
 			case 'p':
 			/* disable nodelay so getch() waits */
 				nodelay(stdscr, FALSE);
+				#if WITH_SDL
+				Mix_PauseMusic();
+				#endif
 				do {
 					/*
 					 * Just loop until p is pressed
 					 */
 				} while (getch() != 'p');
+				#if WITH_SDL
+				Mix_ResumeMusic();
+				#endif
 				nodelay(stdscr, TRUE);
 				break;
 			case 'q':
