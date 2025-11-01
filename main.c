@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 			generate_tetromino(&tetromino);
             print_scores_lvl();
             clean_next();
-			clean_tetromino(tetromino, " `");
+			clean_tetromino(tetromino, " .");
 			refresh();
         }
     }

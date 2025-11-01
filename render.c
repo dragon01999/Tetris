@@ -72,7 +72,7 @@ void draw_board(void)
 {
 	attron(COLOR_PAIR(BOARD_COLOR));
 	for (int i = 0; i < BOARD_HEIGHT; i++) {
-		draw_hor(screen.left_wall, i, BOARD_WIDTH + 1, "` ", 2);
+		draw_hor(screen.left_wall, i, BOARD_WIDTH + 1, ". ", 2);
 	}
 	draw_hor(screen.left_wall, BOARD_HEIGHT, BOARD_WIDTH + 1, "=", 1);
 	draw_hor(screen.left_wall + 1, BOARD_HEIGHT + 1, BOARD_WIDTH, "\\/", 2);
