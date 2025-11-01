@@ -31,9 +31,9 @@ make
 ./game
 ```
 ## Music
-### Background music: Tetris Theme - Korobeiniki - Rearranged
+**Background music:** Tetris Theme - Korobeiniki - Rearranged
 **Creator**: Gregor Quendel
-### Source: 
+**Source:**
 ```
 https://pixabay.com/music/classical-string-quartet-tetris-theme-korobeiniki-rearranged-arr-for-strings-185592/
 ```
