@@ -1,5 +1,5 @@
-# Terminal Tetris
-
+# Tetris
+![](~/img/tetris.png)
 A ncurses based Tetris clone written in C. Optional SDL music bgm included if SDL2 & SDL2_mixer are available.
 
 ## Controls
