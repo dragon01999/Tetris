@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "SDL Audio device open failed. SDL Err:%s", SDL_GetError());
 		return 1;
 	}
-	Mix_Music *bgm = Mix_LoadMUS("tetris-1.mp3");
+	Mix_Music *bgm = Mix_LoadMUS("music/tetris-1.mp3");
 	if (!bgm) {
 		fprintf(stderr, "Failed to open music file. SDL Err:%s", SDL_GetError());
 		return 1;
