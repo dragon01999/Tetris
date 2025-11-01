@@ -57,12 +57,13 @@ static void draw_ver(int x, int y, int times, char *obj)
 
 void draw_logo(void)
 {
-	int x = screen.right_wall + 14;
+	int x = screen.left_wall;
 	int y = (BOARD_HEIGHT - 2) / 2;
 	attron(COLOR_PAIR(BOARD_COLOR));
-	mvprintw(y, x - 7, "[]");
-	mvprintw(y + 1, x - 7, "TETRIS");
-    mvprintw(y + 2, x - 3, "[]");
+	/* y has offsets to make sure it doesn't get overwriten by next piece screen */
+	mvprintw(y + 6, x - 11, "[]");
+	mvprintw(y + 7, x - 11, "TETRIS");
+    mvprintw(y + 8, x - 7, "[]");
 	attroff(COLOR_PAIR(BOARD_COLOR));
     return;
 }
@@ -105,7 +106,7 @@ void clean_tetromino(tetro tet, char *str)
 void print_next_tetromino(void)
 {
     tetris.next_tetromino = tetromino[tetris.next][0];
-    int x = screen.left_wall / 2 - 4;
+    int x = screen.left_wall - 10;
     int y = BOARD_HEIGHT / 2;
 
     for (int i = 0; i < 4; i++) {
