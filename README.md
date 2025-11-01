@@ -31,7 +31,7 @@ make
 ./game
 ```
 ## Music
-## Background music: Tetris Theme - Korobeiniki - Rearranged
+### Background music: Tetris Theme - Korobeiniki - Rearranged
 ### Creator: Gregor Quendel
 ### Source: 
 ```
