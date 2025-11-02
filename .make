@@ -29,17 +29,24 @@ const tetro tetromino[7][4] = {
 	[O] = {
 		    { .x = {0,2,0,2}, .y = {0,0,1,1} }
 	},
-	[J] = { 
-		    { .x = {0,0,2,4}, .y = {0,1,1,1} },  
-		    { .x = {0,2,2,2}, .y = {0,0,1,2} },     
-		    { .x = {2,4,2,2}, .y = {0,0,1,2} },      
-  		    { .x = {0,2,4,4}, .y = {1,1,1,2} }   
-	},                                               
+	[J] = {
+    // 0° rotation
+    { .x = { -2, 0, 2, -2 }, .y = { 0, 0, 0, -1 } },
+
+    // 90° rotation
+    { .x = { 0, 0, 0, 2 }, .y = { -1, 0, 1, 1 } },
+
+    // 180° rotation
+    { .x = { -2, 0, 2, 2 }, .y = { 0, 0, 0, 1 } },
+
+    // 270° rotation
+    { .x = { 0, 0, 0, -2 }, .y = { -1, 0, 1, -1 } }
+},                                              
 	[L] = { 
-		    { .x = {0,0,2,4}, .y = {0,1,1,1} },     
-  	       	{ .x = {2,2,2,4}, .y = {0,1,2,2} },     
-      		{ .x = {0,2,4,0}, .y = {1,1,1,2} }, 
-		    { .x = {0,2,2,2}, .y = {0,0,1,2} }      
+		    { .x = {0,0,0,2}, .y = {-1,0,1,1} },     
+  	       	{ .x = {2,0,-2,2}, .y = {0,0,0,-1} },     
+      		{ .x = {0,0,0,-2}, .y = {1,0,-1,-1} }, 
+		    { .x = {-2,0,-2,-2}, .y = {0,0,0,1} }      
   	},                                                 	 
     [S] = { 
 		    { .x = {2,4,0,2}, .y = {0,0,1,1} },
@@ -53,13 +60,21 @@ const tetro tetromino[7][4] = {
 		    { .x = {0,2,2,4}, .y = {1,1,2,2} },   
     		{ .x = {2,0,2,0}, .y = {0,1,1,2} }
     },
-	[T] = {     
-		    { .x = {2,0,2,4}, .y = {0,1,1,1} },				
-	  	    { .x = {2,2,2,4}, .y = {0,1,2,1} },   
-		    { .x = {0,2,4,2}, .y = {1,1,1,2} },     
-		    { .x = {0,2,2,2}, .y = {1,0,1,2} }      
-    },                                           
-};	
+	[T] = {
+    // 0°
+    { .x = { -2, 0, 2, 0 }, .y = { 0, 0, 0, -1 } },
+
+    // 90°
+    { .x = { -1, -1, -1, 1 }, .y = { -1, 0, 1, 0 } },
+
+    // 180°
+    { .x = { -2, 0, 2, 0 }, .y = { 0, 0, 0, 1 } },
+
+    // 270°
+    { .x = { 1, 1, 1, -1 }, .y = { -1, 0, 1, 0 } },
+},
+	};
+
 
 /* spawns new piece */
 void generate_tetromino(tetro *tet)
@@ -68,7 +83,7 @@ void generate_tetromino(tetro *tet)
 		tetris.curr_piece = (rand() % 7);
 		tetris.next = (rand() % 7);
 	} 
-	tetris.curr_piece = tetris.next;
+	tetris.curr_piece = I;
 	tetris.next = (rand() % 7);
 	*tet = tetromino[tetris.curr_piece][0];
 	tetris.rotation = 0;
@@ -78,22 +93,27 @@ void generate_tetromino(tetro *tet)
 }
 
 /* rotates tetromino using precomputed rotation states */
-int rotate_tetromino(tetro *tet)
-{
-	int curr_x, curr_y, mid_x, mid_y;
-	/* store next rotation pivot. 1 is taken as mid */
-	mid_x = tetromino[tetris.curr_piece][tetris.rotation].x[1];
-	mid_y = tetromino[tetris.curr_piece][tetris.rotation].y[1];
-	/* stores current piece pivots */
-	curr_x = tet->x[1];
-	curr_y = tet->y[1];
-	for (int i = 0; i < 4; i++) {
-		tet->x[i] = (tetromino[tetris.curr_piece][tetris.rotation].x[i] - mid_x) + curr_x;
-		tet->y[i] = (tetromino[tetris.curr_piece][tetris.rotation].y[i] - mid_y) + curr_y;
-	}
-	return 0;
-}
+int rotate_tetromino(tetro *tet) {
+    // pivot (absolute position of the center block)
+    int px = tet->x[1];
+    int py = tet->y[1];
 
+    // grab rotation index already updated outside
+    int rot = tetris.rotation;
+    int piece = tetris.curr_piece;
+
+    for (int i = 0; i < 4; i++) {
+        // offset from pivot in the precomputed state
+        int rel_x = tetromino[piece][rot].x[i] - tetromino[piece][rot].x[1];
+        int rel_y = tetromino[piece][rot].y[i] - tetromino[piece][rot].y[1];
+
+        // apply offset relative to current pivot pos
+        tet->x[i] = px + rel_x;
+        tet->y[i] = py + rel_y;
+    }
+
+    return 0;
+}
 /* stores pieces in game_board */
 void store_tetromino(tetro tet)
 {

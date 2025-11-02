@@ -16,12 +16,12 @@ ifeq ($(WITH_SDL), 1)
 	LDFLAGS += $(SDL_LIBS)
 endif
 
-OBJ = tetris.o render.o input.o score.o main.o
+OBJ = game_logic.o render.o input.o score.o main.o
 
-all: game
+all: tetris
 
-game: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o game $(LDFLAGS)
+tetris: $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -o tetris $(LDFLAGS)
 	rm -f $(OBJ)
 	@clear
 
@@ -31,4 +31,4 @@ game: $(OBJ)
 .PHONY: all clean
 
 clean:
-	rm -f $(OBJ) game
+	rm -f $(OBJ) tetris

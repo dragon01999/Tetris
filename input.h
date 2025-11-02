@@ -3,6 +3,6 @@
 
 bool parse_input(tetro *tet);
 
-bool input(tetro *tetromino);
+void input(tetro *tetromino);
 
 #endif

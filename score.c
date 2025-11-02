@@ -2,7 +2,7 @@
 #include <ncurses.h>
 #include <errno.h>
 #include <string.h>
-#include "tetris.h"
+#include "game_logic.h"
 #include "render.h"
 #include "score.h"
 

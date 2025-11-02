@@ -2,7 +2,7 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include "tetris.h"
+#include "game_logic.h"
 // WIDTH is 20 cuz each block in a tetromino is depicted using []
 #define BOARD_WIDTH 20
 #define BOARD_HEIGHT 20

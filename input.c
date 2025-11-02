@@ -2,7 +2,7 @@
 #include <time.h>
 #include <ncurses.h>
 #include "render.h"
-#include "tetris.h"
+#include "game_logic.h"
 
 #if WITH_SDL
 #include <SDL2/SDL.h>
@@ -11,7 +11,7 @@
 
 struct timespec start;
 long long end_ms, curr_ms;
-float delay = 800;
+float delay = 1000;
 
 bool parse_input(tetro *tet)
 {
@@ -35,12 +35,8 @@ bool parse_input(tetro *tet)
 				}
 				tetris.rotation = (tetris.rotation + 1) % 4;
 				rotate_tetromino(&tmp);
-				if (!is_colliding(tmp)) {
-					if (!is_overlapping(&tmp)) {
+				if (!is_colliding(tmp) && !is_overlapping(&tmp))
 						*tet = tmp;
-					}
-					return false;
-				}
 				break;
 			case KEY_DOWN:
 				move_down(&tmp);
@@ -48,7 +44,7 @@ bool parse_input(tetro *tet)
 					*tet = tmp;
 				else if (is_overlapping(&tmp))
 					return false;
-				break;
+				break;	
 			case ' ':
 				hard_drop(tet);
 				tetris.score += 10;
@@ -80,26 +76,26 @@ bool parse_input(tetro *tet)
 	return true;
 }
 
-bool input(tetro *tetromino)
+void input(tetro *tetromino)
 {
 	tetro tmp;
 	clock_gettime(CLOCK_MONOTONIC, &start);
 	end_ms = (start.tv_sec * 1000) + delay  + (start.tv_nsec/1000000);
 	curr_ms = start.tv_sec * 1000 + (start.tv_nsec / 1000000);
-    	while (curr_ms <= end_ms) {
+	while (curr_ms <= end_ms) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
 		curr_ms =  start.tv_sec * 1000 + (start.tv_nsec / 1000000);
-        tmp = *tetromino;
+		tmp = *tetromino;
 	    if (!parse_input(tetromino)) {
-			return true;
+			return;
 		}
 		/* for clean we are using " `" cuz the position of left '[' will always be ' ' */
-		clean_tetromino(tmp, " `");
+		clean_tetromino(tmp, " .");
 		flushinp();
 	    draw_tetro(*tetromino, tetris.curr_piece);
 		refresh();
-		napms(2);
+		napms(5);
 	}
-	return false;
+	return;
 }
 

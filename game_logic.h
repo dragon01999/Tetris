@@ -1,5 +1,5 @@
-#ifndef TETRIS_H
-#define TETRIS_H
+#ifndef GAME_LOGIC_H
+#define GAME_LOGIC_H
 #include <stdint.h>
 
 /* dimensions of actual gameboard */
@@ -47,7 +47,7 @@ extern struct GameState tetris;
 
 void generate_tetromino(tetro *tet);
 
-int rotate_tetromino(tetro *tet);
+void rotate_tetromino(tetro *tet);
 
 void store_tetromino(tetro tet);
 

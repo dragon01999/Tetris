@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
-#include "tetris.h"
+#include "game_logic.h"
 #include "render.h"
 #include "input.h"
 #include "score.h"
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
             clean_next();
 			clean_tetromino(tetromino, " .");
 			refresh();
-        }
+		}
     }
 		clear();
 		nodelay(stdscr, FALSE);

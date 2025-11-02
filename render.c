@@ -170,8 +170,7 @@ void place_in_mid(tetro *tet) {
 	    offset = 2;
     for (int i = 0; i < 4; i++) {
         tet->x[i] += BOARD_WIDTH / 2 - offset;
-        /* the y is being offset by 1 so that when a tetromino spawns,
-           it appears to be coming from above the ceiling */
+        /* the y is being offset by 1 so that when a tetromino spawns, it appears to be coming from above the ceiling */
         tet->y[i] -= 1;
     }
     return;
