@@ -28,7 +28,7 @@ make
 ```
 ### Run:
 ```
-./game
+./tetris
 ```
 ## Music
 **Background music:** Tetris Theme - Korobeiniki - Rearranged   
