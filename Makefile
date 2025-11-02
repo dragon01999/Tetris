@@ -23,7 +23,10 @@ all: tetris
 tetris: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o tetris $(LDFLAGS)
 	rm -f $(OBJ)
-	@clear
+	@echo ""
+	@figlet -f standard Tetris
+	@echo ""
+	@echo "Run with: ./tetris"
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
