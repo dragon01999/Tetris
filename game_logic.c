@@ -115,8 +115,9 @@ void store_tetromino(tetro tet)
 /* update y for passed piece */
 void move_down(tetro *tet)
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++) {
 		tet->y[i]++;
+	}
 	return;
 }
 
@@ -134,17 +135,20 @@ void hard_drop(tetro *tet)
 /* update x for passed piece by dir which can be negative or positive */
 void move_direction(tetro *tet, int dir)
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++) {
 		tet->x[i] += dir;
+	}
 	return;
 }
 
 /* check for wall collisions */
 bool is_colliding(tetro tet)
 {
-	for (int i = 0; i < 4; i++) 
-		if (tet.x[i] > screen.right_wall || tet.x[i] < screen.left_wall + 1) 
+	for (int i = 0; i < 4; i++) {
+		if (tet.x[i] > screen.right_wall || tet.x[i] < screen.left_wall + 1) {
 			return true;
+		}
+	}
 	return false;
 }
 
@@ -153,18 +157,22 @@ bool is_overlapping(tetro *tet)
 {
 	tetro tmp = *tet;
 	screen_to_logic(&tmp);
-	for (int i = 0; i < 4; i++) 
-		if (tet->y[i] >= BOARD_HEIGHT || game_board[tmp.y[i]][tmp.x[i]].block == true)
+	for (int i = 0; i < 4; i++) {
+		if (tet->y[i] >= BOARD_HEIGHT || game_board[tmp.y[i]][tmp.x[i]].block == true) {
 			return true;
+		}
+	}
 	return false;
 }
 
 /* check if any block's Y inside a piece is hitting the ceiling and at the same time overlapping */
 bool is_game_over(tetro *tet)
 {
-	for (int i = 0; i < 4; i++) 
-		if (tet->y[i] <= 0 && is_overlapping(tet))
+	for (int i = 0; i < 4; i++) {
+		if (tet->y[i] <= 0 && is_overlapping(tet)) {
 			return true;
+		}
+	}
 	return false;
 }
 
@@ -184,9 +192,11 @@ bool tetromino_fall(tetro *tet)
 /* Check if the row or the line is full for a given Y */
 bool is_lineFull(int line)
 {  
-		for (int i = 0; i < WIDTH; i++)
-			if (game_board[line][i].block == false)
+		for (int i = 0; i < WIDTH; i++) {
+			if (game_board[line][i].block == false) {
 				return false;
+			}
+		}
 		return true;
 }
 
@@ -207,8 +217,9 @@ void clear_lines(void)
 		tetris.cleared_lines++; 
 		need_updation = true;
 	}
-	if (!need_updation)
+	if (!need_updation) {
 		return;
+	}
 	int y = HEIGHT - 1;
 	int tmp_y = HEIGHT - 1;
 	while (y >= 0) {

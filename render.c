@@ -42,16 +42,18 @@ void init_ScreenInfo(void)
 
 static void draw_hor(int x, int y, int times, char *obj, int obj_len)
 {
-	for (int i = 0; i < times; i += obj_len) 
+	for (int i = 0; i < times; i += obj_len) { 
 		mvprintw(y, x + i, "%s", obj);
+	}
 	return;
 	
 }
 
 static void draw_ver(int x, int y, int times, char *obj)
 {
-	for (int i = 0; i < times; i++)
+	for (int i = 0; i < times; i++) {
 		mvprintw(y + i, x, "%s", obj);
+	}
 	return;
 }
 
@@ -166,8 +168,9 @@ void logic_to_screen(tetro *tet) {
 /* Places the spawned piece in the middle */
 void place_in_mid(tetro *tet) {
     int offset = 4;
-    if (tetris.curr_piece == O)
+    if (tetris.curr_piece == O) {
 	    offset = 2;
+	}
     for (int i = 0; i < 4; i++) {
         tet->x[i] += BOARD_WIDTH / 2 - offset;
         /* the y is being offset by 1 so that when a tetromino spawns, it appears to be coming from above the ceiling */

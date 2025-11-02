@@ -8,8 +8,9 @@
 
 void update_scores(void)
 {
-    if (tetris.total_cleared / 10 >= tetris.level)
+    if (tetris.total_cleared / 10 >= tetris.level) {
 		tetris.level += 1;
+	}
 	switch(tetris.cleared_lines) {
 		case SINGLE:
 		    tetris.score += 40 * (tetris.level + 1);
@@ -43,8 +44,9 @@ void load_score(int *highest_score)
 {
 	FILE *in_file = fopen("Tetris.score", "r");
 	if (!in_file) {
-		if (errno != ENOENT)
+		if (errno != ENOENT) {
 			fprintf(stderr,"File could'nt open. Error:%s\n", strerror(errno));
+		}
 		return;
 	}
 	if (fscanf(in_file, "%d", highest_score) == 1) {
@@ -61,8 +63,9 @@ void store_score(int highest_score)
 {
 	FILE *in_file = fopen("Tetris.score", "w");
         if (!in_file) {
-		if (errno != ENOENT) 
+		if (errno != ENOENT) {
 			fprintf(stderr,"File could'nt open. Error:%s\n", strerror(errno));
+		}
         return;
         }
 	fprintf(in_file,"%d",highest_score);

@@ -17,17 +17,19 @@ bool parse_input(tetro *tet)
 {
 	tetro tmp = *tet;
 	int ch = getch();
-	if (ch != ERR)
+	if (ch != ERR) 
 		switch(ch) {
 			case KEY_RIGHT:
 				move_direction(&tmp,2);
-				if (!is_colliding(tmp) && !is_overlapping(&tmp))
+				if (!is_colliding(tmp) && !is_overlapping(&tmp)) {
 					*tet = tmp;
+				}
 				break;
 			case KEY_LEFT:
 				move_direction(&tmp, -2);
-				if (!is_colliding(tmp) && !is_overlapping(&tmp))
+				if (!is_colliding(tmp) && !is_overlapping(&tmp)) {
 					*tet = tmp;
+				}
 				break;
 			case KEY_UP:
 				if (tetris.curr_piece == O) {
@@ -35,15 +37,18 @@ bool parse_input(tetro *tet)
 				}
 				tetris.rotation = (tetris.rotation + 1) % 4;
 				rotate_tetromino(&tmp);
-				if (!is_colliding(tmp) && !is_overlapping(&tmp))
+				if (!is_colliding(tmp) && !is_overlapping(&tmp)) {
 						*tet = tmp;
+				}
 				break;
 			case KEY_DOWN:
 				move_down(&tmp);
-				if (!is_colliding(tmp) && !is_overlapping(&tmp))
+				if (!is_colliding(tmp) && !is_overlapping(&tmp)) {
 					*tet = tmp;
-				else if (is_overlapping(&tmp))
+				}
+				else if (is_overlapping(&tmp)) {
 					return false;
+				}
 				break;	
 			case ' ':
 				hard_drop(tet);
