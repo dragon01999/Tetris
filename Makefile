@@ -24,7 +24,12 @@ tetris: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o tetris $(LDFLAGS)
 	rm -f $(OBJ)
 	@echo ""
-	@figlet -f standard Tetris
+	@echo "# ASCII Art from Tall-Introduction414, reddit"
+	@echo ""
+	@echo "...................................."
+	@echo ":..  ..:  ...:..  ..:(  .  :  :  ..:"
+	@echo "  |  | |  _|__ |  | |.\` .  |  |__  |"
+	@echo "  |__| |_____| |__| (_.\`|__|__|____|"
 	@echo ""
 	@echo "Run with: ./tetris"
 
