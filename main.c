@@ -57,14 +57,14 @@ int main(int argc, char **argv) {
 			refresh();
 		}
     }
-		clear();
-		nodelay(stdscr, FALSE);
-		load_score(&highest_score);
-		if (tetris.score > highest_score) {
-			printw("Congratulations! you have beaten the highest score: %d. Current highest:%d", highest_score, tetris.score);
-			store_score(tetris.score);
-		} else
-		    printw("Highest Score: %d", highest_score);
+	clear();
+	nodelay(stdscr, FALSE);
+	load_score(&highest_score);
+	if (tetris.score > highest_score) {
+		printw("Congratulations! you have beaten the highest score: %d. Current highest:%d", highest_score, tetris.score);
+		store_score(tetris.score);
+	} else
+		printw("Highest Score: %d", highest_score);
 	getch();
 	endwin();
 	#if WITH_SDL
