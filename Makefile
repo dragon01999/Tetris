@@ -9,7 +9,7 @@ else
 endif
 
 CFLAGS = -Wall -O2 -g
-LDFLAGS = -lncurses
+LDFLAGS =
 
 ifeq ($(WITH_SDL), 1)
 	CFLAGS += -DWITH_SDL $(SDL_CFLAGS)
@@ -21,16 +21,14 @@ OBJ = game_logic.o render.o input.o score.o main.o
 all: tetris
 
 tetris: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o tetris $(LDFLAGS)
+	$(CC) $(CFLAGS) $(OBJ) -o tetris -lncurses $(LDFLAGS)
 	rm -f $(OBJ)
 	@echo ""
-	@echo "# ASCII Art from Tall-Introduction414, reddit"
 	@echo ""
 	@echo "...................................."
 	@echo ":..  ..:  ...:..  ..:(  .  :  :  ..:"
-	@echo "  |  | |  _|__ |  | |.\` .  |  |__  |"
+	@echo "  |  | |  _|__ |  |  .\` .  |  |__  |"
 	@echo "  |__| |_____| |__| (_.\`|__|__|____|"
-	@echo ""
 	@echo "Run with: ./tetris"
 
 %.o: %.c
