@@ -8,8 +8,9 @@ else
 	WITH_SDL = 1
 endif
 
-CFLAGS = -Wall -O2 -g
-LDFLAGS =
+CFLAGS ?=
+CFLAGS += -Wall -O2 -g -std=c99
+LDFLAGS ?=
 
 ifeq ($(WITH_SDL), 1)
 	CFLAGS += -DWITH_SDL $(SDL_CFLAGS)
@@ -24,7 +25,7 @@ tetris: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o tetris -lncurses $(LDFLAGS)
 	rm -f $(OBJ)
 	@echo ""
-	@echo ""
+	@echo "ASCII art by reddit, Tall-Introduction414"
 	@echo "...................................."
 	@echo ":..  ..:  ...:..  ..:(  .  :  :  ..:"
 	@echo "  |  | |  _|__ |  |  .\` .  |  |__  |"
