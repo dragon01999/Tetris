@@ -73,7 +73,7 @@ void generate_tetromino(tetro *tet)
 	*tet = tetromino[tetris.curr_piece][0];
 	tetris.rotation = 0;
 	logic_to_screen(tet);
-    place_in_mid(tet);
+        place_in_mid(tet);
 	return;
 }
 
