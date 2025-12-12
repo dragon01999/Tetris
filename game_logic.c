@@ -51,9 +51,9 @@ const tetro tetromino[7][4] = {
 		    { .x = {0, 2, 2, 4}, .y = {0, 0, 1, 1} }, 
  		    { .x = {2, 0, 2, 0}, .y = {0, 1, 1, 2} },
 		    { .x = {0, 2, 2, 4}, .y = {1, 1, 2, 2} },
-    		    { .x = {2, 0, 2, 0}, .y = {0, 1, 1, 2} }
-        },
-        [T] = {
+    		{ .x = {2, 0, 2, 0}, .y = {0, 1, 1, 2} }
+    },
+    [T] = {
 		    { .x = {2, 2, 0, 4}, .y = {0, 1, 1, 1} },
 		    { .x = {2, 2, 2, 4}, .y = {0, 1, 2, 1} },
 		    { .x = {2, 2, 4, 0}, .y = {2, 1, 1, 1} },
@@ -73,7 +73,7 @@ void generate_tetromino(tetro *tet)
 	*tet = tetromino[tetris.curr_piece][0];
 	tetris.rotation = 0;
 	logic_to_screen(tet);
-        place_in_mid(tet);
+    place_in_mid(tet);
 	return;
 }
 
