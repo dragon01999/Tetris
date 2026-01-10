@@ -202,24 +202,20 @@ bool line_full(int line)
 
 /* Deletes the full rows */
 void clear_lines(void)
-{ 
-	tetris.cleared_lines = 0;
+{
+    tetris.cleared_lines = 0;
 	// Start from bottom
-    int y = HEIGHT-1, write_in = y;
+    int write_in = HEIGHT-1;
     for (int line = HEIGHT-1; line >= 0; line--) {
-        if (line_full(line)) { // skip full line, move to next src
-            y--;
+        if (!line_full(line)) { 
+            // copy and keep rows which arent full
+		    memcpy(&tmp_board[write_in][0], &game_board[line][0], sizeof(table) * WIDTH);
+		    write_in--;  // after copy update destination
 			tetris.cleared_lines++;
-            continue;
-        }
-		memcpy(&tmp_board[write_in][0], &game_board[y][0], sizeof(table) * WIDTH);
-		write_in--;
-		y--;
-		} // Copy back tmp_board to game_board
-        memcpy(game_board, tmp_board, sizeof(game_board));
-		tetris.total_cleared += tetris.cleared_lines;
+		}
+    }
+	if (tetris.cleared_lines != 0) // if theres lines cleared then just copy the tmp to original
+        memcpy(game_board, tmp_board, sizeof(game_board));  // Copy back tmp_board to game_board
+	tetris.total_cleared += tetris.cleared_lines;
 }
-
-                
-
 
