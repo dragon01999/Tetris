@@ -65,7 +65,7 @@ bool is_game_over(tetro *tet);
 
 bool tetromino_fall(tetro *tet);
 
-bool is_lineFull(int line);
+bool line_full(int line);
 
 void clear_lines(void);
 

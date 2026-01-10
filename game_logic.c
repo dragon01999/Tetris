@@ -190,7 +190,7 @@ bool tetromino_fall(tetro *tet)
 }
 
 /* Check if the row or the line is full for a given Y */
-bool is_lineFull(int line)
+bool line_full(int line)
 {  
 		for (int i = 0; i < WIDTH; i++) {
 			if (game_board[line][i].block == false) {
@@ -202,38 +202,24 @@ bool is_lineFull(int line)
 
 /* Deletes the full rows */
 void clear_lines(void)
-{   
+{ 
 	tetris.cleared_lines = 0;
-	int non_fullrow[20];
-	memset(non_fullrow, 0, sizeof(non_fullrow));
-	bool need_updation = false;
-	for (int i = HEIGHT - 1; i > 0; i--) {
-		if (!is_lineFull(i)) {
-        /* Store row numbers which are not full */
-			non_fullrow[i] = i;
-			continue;
-		}
-        /* for every full row increment cleared_lines */
-		tetris.cleared_lines++; 
-		need_updation = true;
-	}
-	if (!need_updation) {
-		return;
-	}
-	int y = HEIGHT - 1;
-	int tmp_y = HEIGHT - 1;
-	while (y >= 0) {
-		/* make sure the row numbers stored in non_full rows arent out of bounds */
-		if (non_fullrow[y] > 0 && non_fullrow[y] < 20) {
-		/* copy all non full rows to tmp board */
-		memcpy(tmp_board[tmp_y], game_board[y], sizeof(table) * WIDTH);
-		tmp_y--;
-	}
+	// Start from bottom
+    int y = HEIGHT-1, write_in = y;
+    for (int line = HEIGHT-1; line >= 0; line--) {
+        if (line_full(line)) { // skip full line, move to next src
+            y--;
+			tetris.cleared_lines++;
+            continue;
+        }
+		memcpy(&tmp_board[write_in][0], &game_board[y][0], sizeof(table) * WIDTH);
+		write_in--;
 		y--;
-	}
-	    /* write back the nonfull rows from tmp board to game_board */
-	memcpy(game_board, tmp_board, sizeof(game_board));
-	    /* update total cleared lines. */
-	tetris.total_cleared += tetris.cleared_lines;
-	return;
+		} // Copy back tmp_board to game_board
+        memcpy(game_board, tmp_board, sizeof(game_board));
+		tetris.total_cleared += tetris.cleared_lines;
 }
+
+                
+
+

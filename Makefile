@@ -9,7 +9,7 @@ else
 endif
 
 CFLAGS ?=
-CFLAGS += -Wall -O2 -g -std=c99
+CFLAGS += -Wall -O0 -g -std=c99
 LDFLAGS ?=
 
 ifeq ($(WITH_SDL), 1)
